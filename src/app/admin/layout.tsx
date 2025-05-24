@@ -34,7 +34,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     return (
         <div className="flex min-h-screen overflow-hidden">
             <aside className="w-64 bg-[#1E40AF] text-white p-4 flex flex-col">
-                <h2 className="text-xl font-bold mb-4 text-[#CA8A04]">Admin Dashboard</h2>
+                <h2 className="text-xl font-bold mb-4 text-[#D4AF37]">Admin Dashboard</h2>
                 <ul className="space-y-2">
                     <li>
                         <Link

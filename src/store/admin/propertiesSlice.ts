@@ -104,9 +104,19 @@ const propertiesSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch properties';
       })
-      .addCase(fetchPropertyById.fulfilled, (state, action: PayloadAction<Property>) => {
-        state.current = action.payload;
-      });
+      
+    .addCase(fetchPropertyById.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(fetchPropertyById.fulfilled, (state, action: PayloadAction<Property>) => {
+      state.current = action.payload;
+      state.loading = false;
+    })
+    .addCase(fetchPropertyById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message || 'Failed to fetch the property';
+    });
   },
 });
 

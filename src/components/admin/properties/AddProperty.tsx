@@ -38,6 +38,9 @@ const AddProperty: React.FC = () => {
   const [ownerEmail, setOwnerEmail] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [photoGallery, setPhotoGallery] = useState<File[]>([]);
+   const [errorImage, setErrorImage] = useState<string | null>(null);
+    const [errorGallery, setErrorGallery] = useState<string | null>(null);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +72,6 @@ const AddProperty: React.FC = () => {
 
     try {
       await dispatch(addProperty(formData)).unwrap();
-      alert('Property added successfully!');
       setTitle('');
       setDescription('');
       setPrice('');
@@ -84,8 +86,8 @@ const AddProperty: React.FC = () => {
 
       router.push('/admin/properties'); // Redirect after success
     } catch {
-      alert('Failed to add property. Please try again.');
-    }
+    setSubmitError('Failed to add property. Please try again.');
+        }
   };
 
   // Icon + Label component for reuse
@@ -105,6 +107,12 @@ const AddProperty: React.FC = () => {
   );
 
   return (
+  <>
+    {submitError && (
+      <p style={{ color: 'red', marginBottom: '1rem', fontWeight: 'bold' }}>
+        {submitError}
+      </p>
+    )}
     <form
       onSubmit={handleSubmit}
       encType="multipart/form-data"
@@ -267,14 +275,28 @@ const AddProperty: React.FC = () => {
           id="imageFile"
           type="file"
           accept="image/*"
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length > 0) {
-              setImageFile(e.target.files[0]);
+             onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            const maxSizeInBytes = 2048 * 1024; // 2MB
+            if (file.size > maxSizeInBytes) {
+              setErrorImage("Image size must be less than 2 MB.");
+              e.target.value = ""; // reset input
+              setImageFile(null);
+              return;
             }
-          }}
+            setErrorImage(null); // clear error if valid
+            setImageFile(file);
+          }
+        }}
           required
           className=""
         />
+         {errorImage && (
+        <p style={{ color: "red", marginTop: "0.25rem", fontSize: "0.875rem" }}>
+          {errorImage}
+        </p>
+      )}
       </div>
 
       {/* Photo Gallery */}
@@ -282,18 +304,37 @@ const AddProperty: React.FC = () => {
         <LabelWithIcon htmlFor="photoGallery" icon={<FiCamera className="text-pink-700" />}>
           Photo Gallery (optional)
         </LabelWithIcon>
-        <input
-          id="photoGallery"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={(e) => {
-            if (e.target.files) {
-              setPhotoGallery(Array.from(e.target.files));
-            }
-          }}
-          className=""
-        />
+<input
+  id="photoGallery"
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={(e) => {
+    if (e.target.files) {
+      const maxSizeInBytes = 2048 * 1024; // 2MB
+      const filesArray = Array.from(e.target.files);
+
+      // Check if any file exceeds max size
+      const tooLargeFile = filesArray.find(file => file.size > maxSizeInBytes);
+
+      if (tooLargeFile) {
+        setErrorGallery(`Each photo must be less than 2MB. "${tooLargeFile.name}" is too large.`);
+        setPhotoGallery([]); // Clear previous selection or keep as you want
+      } else {
+        setErrorGallery(null); // Clear error if all good
+        setPhotoGallery(filesArray);
+      }
+    }
+  }}
+  className=""
+/>
+
+{errorGallery && (
+  <p style={{ color: "red", marginTop: "0.25rem", fontSize: "0.875rem" }}>
+    {errorGallery}
+  </p>
+)}
+
       </div>
 
       {/* Submit button */}
@@ -312,6 +353,7 @@ const AddProperty: React.FC = () => {
       {/* Error message */}
       {error && <p className="col-span-2 text-center text-red-600">{error}</p>}
     </form>
+      </>
   );
 };
 

@@ -54,9 +54,19 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
   const [photoGalleryFiles, setPhotoGalleryFiles] = useState<File[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
+    const [errorImage, setErrorImage] = useState<string | null>(null);
+    const [errorGallery, setErrorGallery] = useState<string | null>(null);
+
+        const [hasFetched, setHasFetched] = useState(false);
+        const [submitError, setSubmitError] = useState<string | null>(null);
+
+
+
   // Fetch property on mount
   useEffect(() => {
     dispatch(fetchPropertyById(propertyId));
+            setHasFetched(true);  // mark fetch as triggered
+
   }, [dispatch, propertyId]);
 
   // Load property data into form and images
@@ -115,13 +125,27 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
   }, [photoGalleryFiles]);
 
   // Handle adding new gallery files
-  const handlePhotoGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
- if (e.target.files) {
-  const filesArray = Array.prototype.slice.call(e.target.files);
-  setPhotoGalleryFiles(prev => [...prev, ...filesArray]);
-}
+const handlePhotoGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files) {
+    const maxSizeInBytes = 2048 * 1024; // 2MB
+    const filesArray = Array.prototype.slice.call(e.target.files) as File[];
 
-  };
+    // Check if any file exceeds the size limit
+    const invalidFile = filesArray.find(file => file.size > maxSizeInBytes);
+
+    if (invalidFile) {
+      setErrorGallery(`Each image must be less than 2 MB. "${invalidFile.name}" is too large.`);
+      e.target.value = ""; // reset input
+      return; // stop processing
+    }
+
+    setErrorGallery(null); // clear previous errors
+
+    // Append new files to existing ones
+    setPhotoGalleryFiles(prev => [...prev, ...filesArray]);
+  }
+};
+
 
   // Remove existing gallery image by index
   const handleRemoveExistingGalleryImage = (index: number) => {
@@ -174,11 +198,9 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
 
     try {
       await dispatch(updateProperty({ id: propertyId, formData })).unwrap();
-      alert('Property updated successfully!');
       router.push('/admin/properties');
     } catch {
-      alert('Failed to update property. Please try again.');
-    }
+    setSubmitError('Failed to update property. Please try again.');    }
   };
 
   const LabelWithIcon = ({
@@ -199,11 +221,15 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     </label>
   );
 
-  if (loading) return <p>Loading property data...</p>;
-  if (error) return <p className="text-red-600">Error: {error}</p>;
-  if (!property) return <p>No property found.</p>;
-
   return (
+     <>
+     {submitError && (
+      <p style={{ color: 'red', marginBottom: '1rem', fontWeight: 'bold' }}>
+        {submitError}
+      </p>
+    )}
+     
+    {hasFetched ? (
 <form
   onSubmit={handleSubmit}
   encType="multipart/form-data"
@@ -385,18 +411,33 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     {!existingImageUrl && !imageFile && (
       <p className="text-gray-500">No main image selected</p>
     )}
-    <input
-      type="file"
-      id="mainImage"
-      accept="image/*"
-      onChange={(e) => {
-        if (e.target.files?.length) {
-          setImageFile(e.target.files[0]);
-          setExistingImageUrl(null);
-        }
-      }}
-      className="mt-1"
-    />
+<input
+        type="file"
+        id="mainImage"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            const maxSizeInBytes = 2048 * 1024; // 2MB
+            if (file.size > maxSizeInBytes) {
+              setErrorImage("Image size must be less than 2 MB.");
+              e.target.value = ""; // reset input
+              setImageFile(null);
+              return;
+            }
+            setErrorImage(null); // clear error if valid
+            setImageFile(file);
+            setExistingImageUrl(null);
+          }
+        }}
+        className="mt-1"
+      />
+      {errorImage && (
+        <p style={{ color: "red", marginTop: "0.25rem", fontSize: "0.875rem" }}>
+          {errorImage}
+        </p>
+      )}
+
   </div>
 
   {/* Photo Gallery */}
@@ -448,14 +489,20 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
       ))}
     </div>
 
-    <input
-      type="file"
-      id="photoGallery"
-      multiple
-      accept="image/*"
-      onChange={handlePhotoGalleryChange}
-      className="mt-1"
-    />
+<input
+  type="file"
+  id="photoGallery"
+  multiple
+  accept="image/*"
+  onChange={handlePhotoGalleryChange}
+  className="mt-1"
+/>
+{errorGallery && (
+  <p style={{ color: "red", marginTop: "0.25rem", fontSize: "0.875rem" }}>
+    {errorGallery}
+  </p>
+)}
+
   </div>
 
   <div className="col-span-2 flex justify-center mt-4">
@@ -467,7 +514,10 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     </button>
   </div>
 </form>
-
+) : (
+      <p>Loading...</p> // optional loading UI while waiting
+    )}
+  </>
   );
 };
 
