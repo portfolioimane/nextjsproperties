@@ -5,6 +5,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  role: string;
   // Add more fields as needed
 }
 
@@ -26,7 +27,7 @@ export const login = createAsyncThunk(
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await axios.post('/login', credentials);
-      return response.data;
+      return response.data.user;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -53,6 +54,7 @@ export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWi
   try {
     const response = await axios.get('/user');
     console.log(response.data.user);
+    console.log(response.data.user.role);
     return response.data.user;
   } catch (err: any) {
     return rejectWithValue(err.response?.data || err.message);

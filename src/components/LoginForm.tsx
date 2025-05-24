@@ -18,8 +18,10 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Dispatch the login action and wait for the result
       const user = await dispatch(login({ email, password })).unwrap();
-
+      console.log('user', user);
+      // After successfully logging in, check user role and redirect
       if (user.role === 'admin') {
         router.push('/admin/dashboard');
       } else {

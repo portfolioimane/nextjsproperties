@@ -1,6 +1,7 @@
+// app/layout.tsx
 import '@/app/globals.css';
 import { Providers } from '@/components/Providers';
-import Navbar from '@/components/Navbar';
+import FrontendLayout from '@/components/FrontendLayout';
 
 export const metadata = {
   title: 'Property Listing App',
@@ -10,8 +11,7 @@ export const metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
-            <head>
-        {/* Link to Material Icons */}
+      <head>
         <link
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet"
@@ -19,8 +19,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       </head>
       <body suppressHydrationWarning>
         <Providers>
-          <Navbar />
-          {children}
+          <FrontendLayout>{children}</FrontendLayout>
         </Providers>
       </body>
     </html>

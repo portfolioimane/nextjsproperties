@@ -15,13 +15,10 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Trigger checkAuth every time the component is mounted or refreshed
   useEffect(() => {
-    dispatch(checkAuth()); // Dispatch checkAuth on mount or refresh
-    // Force reload on refresh (this is optional and should be used with caution)
+    dispatch(checkAuth());
   }, [dispatch]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -42,8 +39,8 @@ const Navbar = () => {
     await dispatch(logout());
   };
 
-  // Don't render until auth check is done
-  if (!authChecked) return null;
+  const dashboardLink =
+    user?.role === 'admin' ? '/admin/dashboard' : '/customerdashboard/mybookings';
 
   return (
     <nav className="bg-white shadow-md py-4">
@@ -64,59 +61,65 @@ const Navbar = () => {
             Contact
           </Link>
 
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center text-gray-700 hover:text-blue-500 focus:outline-none"
-            >
-              <span className="material-icons">
-                {isAuthenticated ? 'account_circle' : 'person'}
-              </span>
-              <span className="ml-1">{isAuthenticated ? user?.name : 'Account'}</span>
-            </button>
+          {/* User Account (only render after authChecked) */}
+          {authChecked && (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center text-gray-700 hover:text-blue-500 focus:outline-none"
+              >
+                <span className="material-icons">
+                  {isAuthenticated ? 'account_circle' : 'person'}
+                </span>
+                <span className="ml-1">{isAuthenticated ? user?.name : 'Account'}</span>
+              </button>
 
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 bg-white shadow-md rounded-lg w-40 z-20">
-                {!isAuthenticated ? (
-                  <>
-                    <Link
-                      href="/login"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    >
-                      Register
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/customerdashboard/profile"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      href="/customerdashboard/mybookings"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    >
-                      Dashboard
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    >
-                      Logout
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 bg-white shadow-md rounded-lg w-40 z-20">
+                  {!isAuthenticated ? (
+                    <>
+                      <Link
+                        href="/login"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        href="/register"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                      >
+                        Register
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      {/* Only show Profile link if user is NOT an admin */}
+                      {user?.role !== 'admin' && (
+                        <Link
+                          href="/customerdashboard/profile"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                        >
+                          Profile
+                        </Link>
+                      )}
+                      <Link
+                        href={dashboardLink}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -151,42 +154,48 @@ const Navbar = () => {
           >
             Contact
           </Link>
-          {!isAuthenticated ? (
-            <>
-              <Link
-                href="/login"
-                className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
-              >
-                Register
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/customerdashboard/profile"
-                className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
-              >
-                Profile
-              </Link>
-              <Link
-                href="/customerdashboard/mybookings"
-                className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
-              >
-                Dashboard
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left text-gray-700 hover:bg-gray-200 px-2 py-1"
-              >
-                Logout
-              </button>
-            </>
+
+          {authChecked && (
+            !isAuthenticated ? (
+              <>
+                <Link
+                  href="/login"
+                  className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
+                >
+                  Register
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Only show Profile link if user is NOT an admin */}
+                {user?.role !== 'admin' && (
+                  <Link
+                    href="/customerdashboard/profile"
+                    className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
+                  >
+                    Profile
+                  </Link>
+                )}
+                <Link
+                  href={dashboardLink}
+                  className="block text-gray-700 hover:bg-gray-200 px-2 py-1"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left text-gray-700 hover:bg-gray-200 px-2 py-1"
+                >
+                  Logout
+                </button>
+              </>
+            )
           )}
         </div>
       )}
