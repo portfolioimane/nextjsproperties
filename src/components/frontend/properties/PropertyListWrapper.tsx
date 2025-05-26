@@ -1,17 +1,9 @@
-// PropertyListWrapper.tsx
-'use client'
+'use client';
+
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/store/hooks';
-import { setProperties } from '@/store/propertiesSlice';
+import { setProperties, Property } from '@/store/propertiesSlice'; // ✅ Import the Property type
 import PropertyList from './PropertyList';
-
-interface Property {
-  id: number;
-  title: string;
-  description: string;
-  price: string;
-  image: string;
-}
 
 interface PropertyListWrapperProps {
   properties: Property[];

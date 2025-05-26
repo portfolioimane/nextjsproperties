@@ -16,7 +16,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const [isPropertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
-    const [isAmenitiesDropdownOpen, setAmenitiesDropdownOpen] = useState(false);
     const [isCustomizeDropdownOpen, setCustomizeDropdownOpen] = useState(false);
     const [isSettingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
     const [isReviewsDropdownOpen, setReviewsDropdownOpen] = useState(false);
@@ -46,32 +45,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                         </Link>
                     </li>
 
-                    <li>
-                        <div
-                            onClick={() => toggleDropdown(setAmenitiesDropdownOpen)}
-                            className="flex items-center justify-between space-x-2 hover:bg-[#1A3D8A] p-2 rounded cursor-pointer transition-colors"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <i className="material-icons">home_repair_service</i>
-                                <span>Manage Amenities</span>
-                            </div>
-                            <i className="material-icons">{isAmenitiesDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'}</i>
-                        </div>
-                        {isAmenitiesDropdownOpen && (
-                            <ul className="ml-6 mt-2 space-y-1">
-                                <li>
-                                    <Link href="/admin/amenities" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        View Amenities
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/admin/amenities/add" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        Add Amenity
-                                    </Link>
-                                </li>
-                            </ul>
-                        )}
-                    </li>
+        
 
                     <li>
                         <div

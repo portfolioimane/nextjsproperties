@@ -1,7 +1,7 @@
 // app/layout.tsx
 import '@/app/globals.css';
 import { Providers } from '@/components/Providers';
-import FrontendLayout from '@/components/FrontendLayout';
+import FrontendLayout from '@/components/frontend/FrontendLayout';
 
 export const metadata = {
   title: 'Property Listing App',

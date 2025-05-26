@@ -1,5 +1,5 @@
 // Home.tsx
-import PropertyListWrapper from '@/components/PropertyListWrapper';
+import PropertyListWrapper from '@/components/frontend/properties/PropertyListWrapper';
 import api from '@/utils/axios'; // Import your axios utility
 
 const Home = async () => {

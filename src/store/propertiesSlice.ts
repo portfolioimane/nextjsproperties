@@ -5,7 +5,6 @@ export interface Photo {
   photo_url: string;
 }
 
-// Then update Property type:
 export interface Property {
   id: number;
   title: string;
@@ -19,17 +18,19 @@ export interface Property {
   owner_phone: string;
   owner_email?: string;
   featured: boolean;
-  photo_gallery: Photo[]; // no "?" mark
+  photo_gallery: Photo[];
 }
 
 interface PropertiesState {
   list: Property[];
   loading: boolean;
+  details: Property | null; // ✅ Add this for property details
 }
 
 const initialState: PropertiesState = {
   list: [],
   loading: false,
+  details: null,
 };
 
 const propertiesSlice = createSlice({
@@ -39,8 +40,11 @@ const propertiesSlice = createSlice({
     setProperties(state, action: PayloadAction<Property[]>) {
       state.list = action.payload;
     },
+    setPropertyDetails(state, action: PayloadAction<Property>) {
+      state.details = action.payload;
+    },
   },
 });
 
-export const { setProperties } = propertiesSlice.actions;
+export const { setProperties, setPropertyDetails } = propertiesSlice.actions;
 export default propertiesSlice.reducer;
