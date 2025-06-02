@@ -13,8 +13,9 @@ import {
   FaBath,
   FaPhone,
   FaEnvelope,
-  FaStar,
-  FaHome,
+  FaMapMarkerAlt,
+  FaMoneyBillWave,
+  FaUser
 } from 'react-icons/fa';
 
 const PropertyDetails = () => {
@@ -22,15 +23,16 @@ const PropertyDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
-  // Contact form state
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+const [name, setName] = useState('');
+const [email, setEmail] = useState('');
+const [phone, setPhone] = useState('');
+const [contactMethod, setContactMethod] = useState('email');
+const [visitDate, setVisitDate] = useState('');
+const [message, setMessage] = useState('');
+const [submitted, setSubmitted] = useState(false);
 
-  if (!property) {
-    return <p className="text-center py-10">Loading property details...</p>;
-  }
+
+  if (!property) return <p className="text-center py-10">Loading property details...</p>;
 
   const images = [
     { id: 0, url: `${process.env.NEXT_PUBLIC_IMAGE_URL}${property.image}`, alt: property.title },
@@ -48,7 +50,6 @@ const PropertyDetails = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Send data to backend here
     setSubmitted(true);
     setName('');
     setEmail('');
@@ -57,144 +58,195 @@ const PropertyDetails = () => {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 flex gap-10">
-        {/* Left column - 60% width */}
-        <div className="w-3/5">
-          {/* Main Image */}
-          <img
-            src={images[0].url}
-            alt={property.title}
-            className="w-full h-80 object-cover rounded-lg mb-6 cursor-pointer"
-            onClick={() => openModal(0)}
-          />
-
-          {/* Grid Gallery */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            {images.map((img, idx) => (
+      <div className="max-w-7xl mx-auto bg-white shadow rounded-lg p-8 grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* Left Side */}
+        <div className="md:col-span-2 space-y-8">
+          {/* Image gallery */}
+          <div>
+            <div className="relative mb-4">
               <img
-                key={img.id}
-                src={img.url}
-                alt={img.alt}
-                className="h-24 object-cover rounded cursor-pointer hover:ring-2 hover:ring-blue-500"
-                onClick={() => openModal(idx)}
+                src={images[0].url}
+                alt={property.title}
+                onClick={() => openModal(0)}
+                className="w-full h-96 object-cover rounded-lg shadow cursor-pointer hover:brightness-90 transition"
               />
-            ))}
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {images.slice(0, 8).map((img, idx) => (
+                <img
+                  key={img.id}
+                  src={img.url}
+                  alt={img.alt}
+                  className="h-24 w-full object-cover rounded hover:ring-2 hover:ring-blue-500 cursor-pointer"
+                  onClick={() => openModal(idx)}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Property Info */}
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold">{property.title}</h1>
-            <p className="text-gray-700">{property.description}</p>
+          <div className="space-y-6">
+            <h1 className="text-4xl font-bold text-gray-800">{property.title}</h1>
+            <p className="text-gray-600 text-lg">{property.description}</p>
 
-            <div className="mt-4 text-gray-800">
-              {/* Price */}
-              <div className="flex items-center gap-2 mb-3">
-                <FaHome className="text-blue-600" />
-                <strong>Price:</strong> {property.price}
+            <div className="text-gray-700 grid gap-4">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
+                  <FaMoneyBillWave className="text-blue-600" />
+                  <span className="font-semibold">Price:</span> {property.price}
+                </div>
               </div>
 
-              {/* Area, Rooms, Bathrooms */}
-              <div className="flex items-center gap-6 mb-3 text-sm md:text-base">
-                <div className="flex items-center gap-1">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
                   <FaRulerCombined className="text-blue-600" />
-                  {property.area} m²
+                  <span className="font-semibold">Area:</span> {property.area} m²
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
                   <FaBed className="text-blue-600" />
-                  {property.rooms} Rooms
+                  <span className="font-semibold">Rooms:</span> {property.rooms}
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
                   <FaBath className="text-blue-600" />
-                  {property.bathrooms} Bathrooms
+                  <span className="font-semibold">Bathrooms:</span> {property.bathrooms}
                 </div>
               </div>
 
-              {/* Owner credentials */}
-              <div className="flex items-center gap-6 text-sm md:text-base">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2 mt-4">
+                <FaMapMarkerAlt className="text-blue-600" />
+                <span className="font-semibold">Location:</span> {property.address || 'N/A'}
+              </div>
+
+              <div className="pt-4 border-t mt-4 space-y-2">
+                <div className="flex items-center gap-2">
+                  <FaUser className="text-blue-600" />
+                  <strong>Owner:</strong> {property.owner_name || 'N/A'}
+                </div>
+                <div className="flex items-center gap-2">
                   <FaPhone className="text-blue-600" />
                   {property.owner_phone}
                 </div>
                 {property.owner_email && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <FaEnvelope className="text-blue-600" />
                     {property.owner_email}
                   </div>
                 )}
               </div>
-
-  
             </div>
           </div>
         </div>
 
-        {/* Right column - 40% width, sticky */}
-        <div className="w-2/5 sticky top-20 self-start p-6 bg-gray-50 rounded-lg shadow-inner">
-          <h2 className="text-2xl font-semibold mb-6">Contact Owner</h2>
+        {/* Right Side – Contact Form */}
+<div className="sticky top-20 self-start p-6 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
+  <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact the Owner</h2>
 
-          {submitted ? (
-            <p className="text-green-600 font-semibold">Message sent successfully!</p>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-1">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  required
-                  rows={5}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-              >
-                Send Message
-              </button>
-            </form>
-          )}
-        </div>
+  {submitted ? (
+    <div className="text-green-600 font-medium text-center">Thank you! Your message has been sent.</div>
+  ) : (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Name */}
+      <div>
+        <label htmlFor="name" className="text-sm font-medium text-gray-600">Your Name</label>
+        <input
+          id="name"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="John Doe"
+        />
       </div>
 
-      {/* Modal with fullscreen Swiper carousel */}
+      {/* Email */}
+      <div>
+        <label htmlFor="email" className="text-sm font-medium text-gray-600">Your Email</label>
+        <input
+          id="email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="you@example.com"
+        />
+      </div>
+
+      {/* Phone */}
+      <div>
+        <label htmlFor="phone" className="text-sm font-medium text-gray-600">Phone Number</label>
+        <input
+          id="phone"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="+212 600 000 000"
+        />
+      </div>
+
+      {/* Preferred Contact Method */}
+      <div>
+        <label htmlFor="contactMethod" className="text-sm font-medium text-gray-600">Preferred Contact Method</label>
+        <select
+          id="contactMethod"
+          value={contactMethod}
+          onChange={(e) => setContactMethod(e.target.value)}
+          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        >
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+        </select>
+      </div>
+
+      {/* Visit/Move-in Date */}
+      <div>
+        <label htmlFor="date" className="text-sm font-medium text-gray-600">Preferred Visit Date</label>
+        <input
+          id="date"
+          type="date"
+          value={visitDate}
+          onChange={(e) => setVisitDate(e.target.value)}
+          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+      </div>
+
+      {/* Message */}
+      <div>
+        <label htmlFor="message" className="text-sm font-medium text-gray-600">Message</label>
+        <textarea
+          id="message"
+          rows={5}
+          required
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="I'm interested in this property..."
+        ></textarea>
+      </div>
+
+
+
+      {/* Submit */}
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+      >
+        Send Inquiry
+      </button>
+    </form>
+  )}
+</div>
+
+
+      </div>
+
+      {/* Fullscreen Modal Gallery */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
           <button
             onClick={() => setIsModalOpen(false)}
-            className="absolute top-4 right-4 text-white text-3xl font-bold z-50"
+            className="absolute top-4 right-6 text-white text-4xl font-bold z-50"
             aria-label="Close gallery"
           >
             &times;
@@ -205,16 +257,16 @@ const PropertyDetails = () => {
             modules={[Navigation, Pagination]}
             navigation
             pagination={{ clickable: true }}
-            spaceBetween={20}
+            spaceBetween={10}
             slidesPerView={1}
-            className="max-w-4xl w-full h-[80vh]"
+            className="w-full max-w-5xl h-[80vh]"
           >
             {images.map((img) => (
               <SwiperSlide key={img.id}>
                 <img
                   src={img.url}
                   alt={img.alt}
-                  className="w-full h-full object-contain rounded"
+                  className="w-full h-full object-contain rounded-lg"
                 />
               </SwiperSlide>
             ))}

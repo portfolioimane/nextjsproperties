@@ -62,19 +62,19 @@ const PropertyList = () => {
 
               <div className="border-t border-gray-200 mt-5 pt-4 text-gray-600 text-sm space-y-1">
                 <p>
-                  <span className="font-semibold text-blue-700">Owner:</span> {property.owner_name}
+                  <span className="font-semibold text-blue-700">Owner:</span> {property.owner.name}
                 </p>
                 <p className="flex items-center gap-2">
                   <FaPhone className="text-blue-600" />
-                  <a href={`tel:${property.owner_phone}`} className="hover:underline">
-                    {property.owner_phone}
+                  <a href={`tel:${property.owner.phone}`} className="hover:underline">
+                    {property.owner.phone}
                   </a>
                 </p>
-                {property.owner_email && (
+                {property.owner.email && (
                   <p className="flex items-center gap-2">
                     <FaEnvelope className="text-blue-600" />
-                    <a href={`mailto:${property.owner_email}`} className="hover:underline">
-                      {property.owner_email}
+                    <a href={`mailto:${property.owner.email}`} className="hover:underline">
+                      {property.owner.email}
                     </a>
                   </p>
                 )}

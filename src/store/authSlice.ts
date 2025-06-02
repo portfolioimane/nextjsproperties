@@ -11,13 +11,11 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string;
   authChecked: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: '',
   authChecked: false,
 };
 
@@ -37,13 +35,20 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'auth/register',
   async (
-    userData: { name: string; email: string; password: string },
+    userData: {
+      name: string;
+      email: string;
+      password: string;
+      password_confirmation: string;
+      role: 'owner' | 'customer';
+      phone?: string;
+    },
     { dispatch, rejectWithValue }
   ) => {
     try {
       const response = await axios.post('/register', userData);
       await dispatch(login({ email: userData.email, password: userData.password }));
-      return response.data;
+      return response.data.user;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -117,13 +122,11 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.token = action.payload.token || '';
+        state.user = action.payload;
       })
       .addCase(register.fulfilled, () => {})
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
-        state.token = '';
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.user = action.payload;
@@ -131,7 +134,6 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.rejected, (state) => {
         state.user = null;
-        state.token = '';
         state.authChecked = true;
       })
       .addCase(updateUser.fulfilled, (state, action) => {

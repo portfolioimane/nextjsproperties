@@ -51,7 +51,7 @@ const initialState: PropertiesState = {
 
 // Async thunks for API actions
 export const fetchProperties = createAsyncThunk('properties/fetchAll', async () => {
-  const response = await axios.get('/admin/properties');
+  const response = await axios.get('/owner/properties');
     console.log(response.data);
     console.log('propertyid', response.data);
 
@@ -60,12 +60,12 @@ export const fetchProperties = createAsyncThunk('properties/fetchAll', async () 
 
 export const fetchPropertyById = createAsyncThunk('properties/fetchById', async (id: number) => {
    console.log('fetching','');
-  const response = await axios.get(`/admin/properties/${id}`);
+  const response = await axios.get(`/owner/properties/${id}`);
   return response.data;
 });
 
 export const addProperty = createAsyncThunk('properties/add', async (formData: FormData, { dispatch }) => {
-  await axios.post('/admin/properties', formData, {
+  await axios.post('/owner/properties', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   dispatch(fetchProperties());
@@ -74,7 +74,7 @@ export const addProperty = createAsyncThunk('properties/add', async (formData: F
 export const updateProperty = createAsyncThunk(
   'properties/update',
   async ({ id, formData }: { id: number; formData: FormData }, { dispatch }) => {
-    await axios.post(`/admin/properties/${id}`, formData, {
+    await axios.post(`/owner/properties/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       params: { _method: 'PUT' },
     });
@@ -83,12 +83,12 @@ export const updateProperty = createAsyncThunk(
 );
 
 export const deleteProperty = createAsyncThunk('properties/delete', async (id: number, { dispatch }) => {
-  await axios.delete(`/admin/properties/${id}`);
+  await axios.delete(`/owner/properties/${id}`);
   dispatch(fetchProperties());
 });
 
 export const toggleFeatured = createAsyncThunk('properties/toggleFeatured', async (id: number, { dispatch }) => {
-  await axios.put(`/admin/properties/${id}/toggle-featured`);
+  await axios.put(`/owner/properties/${id}/toggle-featured`);
   dispatch(fetchProperties());
 });
 

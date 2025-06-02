@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
-import { addProperty } from '@/store/admin/propertiesSlice';
+import { addProperty } from '@/store/owner/ownerPropertiesSlice';
 import { useRouter } from 'next/navigation';
 
 // Import icons from react-icons (Feather)
@@ -24,13 +24,13 @@ import {
 const AddProperty: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const loading = useSelector((state: RootState) => state.propertiesadmin.loading);
-  const error = useSelector((state: RootState) => state.propertiesadmin.error);
+  const loading = useSelector((state: RootState) => state.propertiesowner.loading);
+  const error = useSelector((state: RootState) => state.propertiesowner.error);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [address, setAddress] = useState('');
+    const [address, setAddress] = useState('');
 
   const [area, setArea] = useState<number>(0);
   const [rooms, setRooms] = useState<number>(0);
@@ -54,11 +54,11 @@ const AddProperty: React.FC = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
-    formData.append('address', address);
     formData.append('area', area.toString());
     formData.append('rooms', rooms.toString());
     formData.append('bathrooms', bathrooms.toString());
     formData.append('image', imageFile);
+      formData.append('address', address);
 
     photoGallery.forEach((file) => {
       formData.append('photoGallery[]', file);
@@ -76,7 +76,7 @@ const AddProperty: React.FC = () => {
       setImageFile(null);
       setPhotoGallery([]);
 
-      router.push('/admin/properties'); // Redirect after success
+      router.push('/owner/properties'); // Redirect after success
     } catch {
     setSubmitError('Failed to add property. Please try again.');
         }
@@ -146,7 +146,7 @@ const AddProperty: React.FC = () => {
         />
       </div>
 
-             <div className="flex flex-col col-span-2">
+       <div className="flex flex-col col-span-2">
     <LabelWithIcon htmlFor="address" icon={<FiHome className="text-indigo-500" />}>
       Address *
     </LabelWithIcon>

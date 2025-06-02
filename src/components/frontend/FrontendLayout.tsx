@@ -7,10 +7,12 @@ import Navbar from '@/components/frontend/Navbar';
 const FrontendLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
+  const isOwner = pathname.startsWith('/owner');
+
 
   return (
     <>
-      {!isAdmin && <Navbar />}
+      {!isAdmin && !isOwner && <Navbar />}
       {children}
     </>
   );

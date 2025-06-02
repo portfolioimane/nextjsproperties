@@ -5,6 +5,12 @@ export interface Photo {
   photo_url: string;
 }
 
+export interface Owner {
+  name: string;
+  email: string;
+  phone: string;
+}
+
 export interface Property {
   id: number;
   title: string;
@@ -14,11 +20,9 @@ export interface Property {
   area: number;
   rooms: number;
   bathrooms: number;
-  owner_name: string;
-  owner_phone: string;
-  owner_email?: string;
   featured: boolean;
   photo_gallery: Photo[];
+  owner: Owner; // ✅ Add this
 }
 
 interface PropertiesState {

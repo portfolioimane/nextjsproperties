@@ -16,22 +16,27 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      // Dispatch the login action and wait for the result
-      const user = await dispatch(login({ email, password })).unwrap();
-      console.log('user', user);
-      // After successfully logging in, check user role and redirect
+  e.preventDefault();
+  try {
+    const user = await dispatch(login({ email, password })).unwrap();
+    console.log('user', user);
+
+    // Wait 300ms before redirecting
+    setTimeout(() => {
       if (user.role === 'admin') {
         router.push('/admin/dashboard');
+      } else if (user.role === 'owner') {
+        router.push('/owner/dashboard');
       } else {
         const redirect = searchParams.get('redirect') || '/';
         router.push(redirect);
       }
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.');
-    }
-  };
+    }, 300);
+    
+  } catch (err: any) {
+    setError(err.message || 'Login failed. Please check your credentials.');
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">

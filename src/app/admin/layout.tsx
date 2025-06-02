@@ -19,7 +19,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const [isCustomizeDropdownOpen, setCustomizeDropdownOpen] = useState(false);
     const [isSettingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
     const [isReviewsDropdownOpen, setReviewsDropdownOpen] = useState(false);
-    const [isCustomersDropdownOpen, setCustomersDropdownOpen] = useState(false);
+    const [isOwnersDropdownOpen, setOwnersDropdownOpen] = useState(false);
 
     const toggleDropdown = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
         setter((prev) => !prev);
@@ -45,7 +45,27 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                         </Link>
                     </li>
 
-        
+                          <li>
+                        <div
+                            onClick={() => toggleDropdown(setOwnersDropdownOpen)}
+                            className="flex items-center justify-between space-x-2 hover:bg-[#1A3D8A] p-2 rounded cursor-pointer transition-colors"
+                        >
+                            <div className="flex items-center space-x-2">
+                                <i className="material-icons">people</i>
+                                <span>Manage Owners</span>
+                            </div>
+                            <i className="material-icons">{isOwnersDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'}</i>
+                        </div>
+                        {isOwnersDropdownOpen && (
+                            <ul className="ml-6 mt-2 space-y-1">
+                                <li>
+                                    <Link href="/admin/owners" className="block hover:bg-[#1A3D8A] p-2 rounded">
+                                        View Owners
+                                    </Link>
+                                </li>
+                            </ul>
+                        )}
+                    </li>
 
                     <li>
                         <div
@@ -81,27 +101,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                         </Link>
                     </li>
 
-                    <li>
-                        <div
-                            onClick={() => toggleDropdown(setCustomersDropdownOpen)}
-                            className="flex items-center justify-between space-x-2 hover:bg-[#1A3D8A] p-2 rounded cursor-pointer transition-colors"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <i className="material-icons">people</i>
-                                <span>Manage Customers</span>
-                            </div>
-                            <i className="material-icons">{isCustomersDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'}</i>
-                        </div>
-                        {isCustomersDropdownOpen && (
-                            <ul className="ml-6 mt-2 space-y-1">
-                                <li>
-                                    <Link href="/admin/customers" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        View Customers
-                                    </Link>
-                                </li>
-                            </ul>
-                        )}
-                    </li>
+             
 
                     <li>
                         <div

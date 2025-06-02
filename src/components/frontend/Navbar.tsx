@@ -10,7 +10,7 @@ const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, authChecked } = useSelector((state: RootState) => state.auth);
   const isAuthenticated = !!user;
-
+  console.log('isAuthenticated',isAuthenticated);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

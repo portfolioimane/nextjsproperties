@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
-import { fetchPropertyById, updateProperty } from '@/store/admin/propertiesSlice';
+import { fetchPropertyById, updateProperty } from '@/store/owner/ownerPropertiesSlice';
 import { useRouter } from 'next/navigation';
 
 import {
@@ -29,13 +29,13 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { current: property, loading, error } = useSelector((state: RootState) => state.propertiesadmin);
+  const { current: property, loading, error } = useSelector((state: RootState) => state.propertiesowner);
 
   // Form states
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [address, setAddress] = useState('');
+    const [address, setAddress] = useState('');
 
   const [area, setArea] = useState<number>(0);
   const [rooms, setRooms] = useState<number>(0);
@@ -71,7 +71,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
       setTitle(property.title);
       setDescription(property.description);
       setPrice(property.price);
-      setAddress(property.address);
+     setAddress(property.address);
 
       setArea(property.area);
       setRooms(property.rooms);
@@ -184,7 +184,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
-    formData.append('address', address);
+        formData.append('address', address);
 
     formData.append('area', area.toString());
     formData.append('rooms', rooms.toString());
@@ -209,7 +209,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
 
     try {
       await dispatch(updateProperty({ id: propertyId, formData })).unwrap();
-      router.push('/admin/properties');
+      router.push('/owner/properties');
     } catch {
       setSubmitError('Failed to update property. Please try again.');
     }
@@ -282,7 +282,6 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
             />
           </div>
 
-          
                        {/* Address */}
 
                  <div className="flex flex-col col-span-2">
@@ -300,6 +299,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     />
   </div>
 
+   
           {/* Description */}
           <div className="flex flex-col col-span-2">
             <LabelWithIcon htmlFor="description" icon={<FiFileText className="text-purple-500" />}>

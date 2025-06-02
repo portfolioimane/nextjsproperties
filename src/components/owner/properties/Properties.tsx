@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProperties, deleteProperty, toggleFeatured } from '@/store/admin/propertiesSlice';
+import { fetchProperties, deleteProperty, toggleFeatured } from '@/store/owner/ownerPropertiesSlice';
 import Link from 'next/link';
 import type { AppDispatch, RootState } from '@/store';
 
 const AdminProperties = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { list: properties, loading, error } = useSelector((state: RootState) => state.propertiesadmin);
+  const { list: properties, loading, error } = useSelector((state: RootState) => state.propertiesowner);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState<number | null>(null);
@@ -47,7 +47,7 @@ const AdminProperties = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
         <Link
-          href="/admin/properties/add"
+          href="/owner/properties/add"
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
         >
           Add Property
@@ -72,9 +72,8 @@ const AdminProperties = () => {
                 <th className="border px-3 py-2">Title</th>
                 <th className="border px-3 py-2">Price (MAD)</th>
                 <th className="border px-3 py-2">Rooms-bathrooms</th>
-                <th className="border px-3 py-2">Owner Name</th>
-                <th className="border px-3 py-2">Email</th>
-                <th className="border px-3 py-2">Phone</th>
+                <th className="border px-3 py-2">Address</th>
+                <th className="border px-3 py-2">Description</th>
                 <th className="border px-3 py-2">Gallery</th>
                 <th className="border px-3 py-2">Featured</th>
                 <th className="border px-3 py-2">Actions</th>
@@ -94,13 +93,9 @@ const AdminProperties = () => {
                   <td className="border px-3 py-2 font-semibold">{property.title}</td>
                   <td className="border px-3 py-2 text-green-600 font-bold">{property.price}</td>
                   <td className="border px-3 py-2">{property.rooms}R - {property.bathrooms}B</td>
-                  <td className="border px-3 py-2">{property.owner.name}</td>
-                  <td className="border px-3 py-2">{property.owner.email ?? '-'}</td>
-                  <td className="border px-3 py-2">
-                    <a href={`tel:${property.owner.phone}`} className="text-blue-600 hover:underline">
-                      {property.owner.phone}
-                    </a>
-                  </td>
+                  <td className="border px-3 py-2">{property.address}</td>
+                  <td className="border px-3 py-2">{property.description}</td>
+            
                   <td className="border px-3 py-2">
                     <div className="flex flex-wrap gap-2 max-w-xs max-h-24 overflow-auto">
                       {property.photo_gallery?.length > 0 ? (
@@ -128,7 +123,7 @@ const AdminProperties = () => {
                   <td className="border px-3 py-2">
                     <div className="flex flex-col gap-2">
                       <Link
-                        href={`/admin/properties/${property.id}/edit`}
+                        href={`/owner/properties/${property.id}/edit`}
                         className="bg-[#d4af37] hover:bg-[#b7950b] text-white text-center py-1 rounded"
                       >
                         Edit
