@@ -7,33 +7,31 @@ export interface Photo {
   photo_url: string;
 }
 
-
 export interface Owner {
   name: string;
   email: string;
   phone: string;
 }
 
-// Then update Property type:
+// Updated Property type including city, type, offer_type
 export interface Property {
   id: number;
-
   title: string;
   description: string;
   price: string;
   image: string;
-  address: string;  // added address field
+  address: string;  
+  city: string;          // added city
+  type: string;          // e.g. apartment, villa
+  offer_type: string;    // e.g. rent, sale
   area: number;
   rooms: number;
   bathrooms: number;
   owner_id: number;   
   featured: boolean;
-  photo_gallery: Photo[]; // no "?" mark
-  owner: Owner; // ✅ Add this
-
-
+  photo_gallery: Photo[];
+  owner: Owner;
 }
-
 
 interface PropertiesState {
   list: Property[];
@@ -52,14 +50,10 @@ const initialState: PropertiesState = {
 // Async thunks for API actions
 export const fetchProperties = createAsyncThunk('properties/fetchAll', async () => {
   const response = await axios.get('/owner/properties');
-    console.log(response.data);
-    console.log('propertyid', response.data);
-
   return response.data;
 });
 
 export const fetchPropertyById = createAsyncThunk('properties/fetchById', async (id: number) => {
-   console.log('fetching','');
   const response = await axios.get(`/owner/properties/${id}`);
   return response.data;
 });
@@ -114,19 +108,18 @@ const propertiesSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch properties';
       })
-      
-    .addCase(fetchPropertyById.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    })
-    .addCase(fetchPropertyById.fulfilled, (state, action: PayloadAction<Property>) => {
-      state.current = action.payload;
-      state.loading = false;
-    })
-    .addCase(fetchPropertyById.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message || 'Failed to fetch the property';
-    });
+      .addCase(fetchPropertyById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertyById.fulfilled, (state, action: PayloadAction<Property>) => {
+        state.current = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchPropertyById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch the property';
+      });
   },
 });
 

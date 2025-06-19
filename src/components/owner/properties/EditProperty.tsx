@@ -19,6 +19,9 @@ import {
   FiImage,
   FiCamera,
   FiXCircle,
+  FiMapPin,
+  FiTag,
+  FiPackage,
 } from 'react-icons/fi';
 
 interface EditPropertyProps {
@@ -35,20 +38,19 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-    const [address, setAddress] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [type, setType] = useState('');
+  const [offerType, setOfferType] = useState('');
 
   const [area, setArea] = useState<number>(0);
   const [rooms, setRooms] = useState<number>(0);
   const [bathrooms, setBathrooms] = useState<number>(0);
 
-  // Main image: can be existing URL or new File
+  // Main image and gallery states remain unchanged
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  // Existing main image URL from backend
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
-
-  // Photo gallery: existing photos as URLs, new files, and previews
   const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>([]);
   const [photoGalleryFiles, setPhotoGalleryFiles] = useState<File[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
@@ -59,19 +61,21 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
   const [hasFetched, setHasFetched] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Fetch property on mount
   useEffect(() => {
     dispatch(fetchPropertyById(propertyId));
     setHasFetched(true);
   }, [dispatch, propertyId]);
 
-  // Load property data into form and images
   useEffect(() => {
     if (property) {
       setTitle(property.title);
       setDescription(property.description);
       setPrice(property.price);
-     setAddress(property.address);
+      setAddress(property.address);
+
+      setCity(property.city || '');       // new field
+      setType(property.type || '');       // new field
+      setOfferType(property.offer_type || ''); // new field
 
       setArea(property.area);
       setRooms(property.rooms);
@@ -92,24 +96,21 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     }
   }, [property]);
 
-  // Update preview for main image file
+  // The image preview logic remains unchanged
   useEffect(() => {
     if (imageFile) {
       const url = URL.createObjectURL(imageFile);
       setImagePreview(url);
-
       return () => URL.revokeObjectURL(url);
     } else {
       setImagePreview(null);
     }
   }, [imageFile]);
 
-  // Update gallery previews for new files
   useEffect(() => {
     if (photoGalleryFiles.length > 0) {
       const urls = photoGalleryFiles.map((file) => URL.createObjectURL(file));
       setGalleryPreviews(urls);
-
       return () => {
         urls.forEach((url) => URL.revokeObjectURL(url));
       };
@@ -118,91 +119,36 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
     }
   }, [photoGalleryFiles]);
 
-  // Handle adding new gallery files
-  const handlePhotoGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const maxSizeInBytes = 2048 * 1024; // 2MB
-      const filesArray = Array.prototype.slice.call(e.target.files) as File[];
-
-      // Check if any file exceeds the size limit
-      const invalidFile = filesArray.find(file => file.size > maxSizeInBytes);
-
-      if (invalidFile) {
-        setErrorGallery(`Each image must be less than 2 MB. "${invalidFile.name}" is too large.`);
-        e.target.value = ""; // reset input
-        return;
-      }
-
-      setErrorGallery(null); // clear previous errors
-
-      // Append new files to existing ones
-      setPhotoGalleryFiles(prev => [...prev, ...filesArray]);
-    }
-  };
-
-  // Remove existing gallery image by index
-  const handleRemoveExistingGalleryImage = (index: number) => {
-    setExistingGalleryUrls((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  // Remove new gallery file by index
-  const handleRemoveNewGalleryFile = (index: number) => {
-    setPhotoGalleryFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  // Remove main image file or existing image
-  const handleRemoveMainImage = () => {
-    setImageFile(null);
-    setExistingImageUrl(null);
-  };
-
-  // Handle main image file selection
-  const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const maxSizeInBytes = 2048 * 1024; // 2MB
-
-      if (file.size > maxSizeInBytes) {
-        setErrorImage(`Main image must be less than 2 MB. "${file.name}" is too large.`);
-        e.target.value = "";
-        return;
-      }
-
-      setErrorImage(null);
-      setImageFile(file);
-      setExistingImageUrl(null); // clear existing image if new selected
-    }
-  };
+  // The handlers for gallery and main image unchanged...
 
   // Submit updated form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
-
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
-        formData.append('address', address);
+    formData.append('address', address);
+
+    formData.append('city', city);           // new
+    formData.append('type', type);           // new
+    formData.append('offer_type', offerType); // new
 
     formData.append('area', area.toString());
     formData.append('rooms', rooms.toString());
     formData.append('bathrooms', bathrooms.toString());
 
-    // Append new main image if selected
     if (imageFile) {
       formData.append('image', imageFile);
     } else if (existingImageUrl === null) {
       formData.append('image_deleted', 'true');
     }
 
-    // Send existing gallery URLs that remain
     existingGalleryUrls.forEach((url) => {
       formData.append('existingGalleryUrls[]', url);
     });
 
-    // Append new gallery image files
     photoGalleryFiles.forEach((file) => {
       formData.append('photoGallery[]', file);
     });
@@ -282,24 +228,71 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
             />
           </div>
 
-                       {/* Address */}
+          {/* Address */}
+          <div className="flex flex-col">
+            <LabelWithIcon htmlFor="address" icon={<FiHome className="text-indigo-500" />}>
+              Address *
+            </LabelWithIcon>
+            <input
+              id="address"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+              className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Property address"
+            />
+          </div>
 
-                 <div className="flex flex-col col-span-2">
-    <LabelWithIcon htmlFor="address" icon={<FiHome className="text-indigo-500" />}>
-      Address *
-    </LabelWithIcon>
-    <input
-      id="address"
-      type="text"
-      value={address}
-      onChange={(e) => setAddress(e.target.value)}
-      required
-      className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      placeholder="Property address"
-    />
-  </div>
+          {/* City */}
+          <div className="flex flex-col">
+            <LabelWithIcon htmlFor="city" icon={<FiMapPin className="text-pink-500" />}>
+              City *
+            </LabelWithIcon>
+            <input
+              id="city"
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+              className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+              placeholder="City"
+            />
+          </div>
 
-   
+          {/* Type */}
+   <div className="flex flex-col">
+  <LabelWithIcon htmlFor="type" icon={<FiTag className="text-purple-500" />}>
+    Type *
+  </LabelWithIcon>
+  <input
+    id="type"
+    type="text"
+    value={type}
+    onChange={(e) => setType(e.target.value)}
+    required
+    className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+    placeholder="e.g. house, apartment, villa, studio"
+  />
+</div>
+
+
+          {/* Offer Type */}
+          <div className="flex flex-col">
+            <LabelWithIcon htmlFor="offerType" icon={<FiPackage className="text-yellow-600" />}>
+              Offer Type *
+            </LabelWithIcon>
+            <input
+              id="offerType"
+              type="text"
+              value={offerType}
+              onChange={(e) => setOfferType(e.target.value)}
+              required
+              className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="Sale, Rent, etc."
+            />
+          </div>
+
           {/* Description */}
           <div className="flex flex-col col-span-2">
             <LabelWithIcon htmlFor="description" icon={<FiFileText className="text-purple-500" />}>
@@ -363,13 +356,12 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
             />
           </div>
 
-
           {/* Main Image */}
           <div className="flex flex-col col-span-2">
             <LabelWithIcon htmlFor="image" icon={<FiImage className="text-orange-500" />}>
               Main Image *
             </LabelWithIcon>
-            {existingImageUrl || imagePreview ? (
+            {(existingImageUrl || imagePreview) && (
               <div className="relative mb-2 w-60 h-40 rounded overflow-hidden border border-gray-300">
                 <img
                   src={imagePreview || existingImageUrl || ''}
@@ -378,19 +370,35 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
                 />
                 <button
                   type="button"
-                  onClick={handleRemoveMainImage}
+                  onClick={() => {
+                    setImageFile(null);
+                    setExistingImageUrl(null);
+                  }}
                   className="absolute top-1 right-1 text-red-600 bg-white rounded-full p-1 hover:bg-red-200"
                   aria-label="Remove main image"
                 >
                   <FiXCircle />
                 </button>
               </div>
-            ) : null}
+            )}
             <input
               id="image"
               type="file"
               accept="image/*"
-              onChange={handleMainImageChange}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  const file = e.target.files[0];
+                  const maxSizeInBytes = 2048 * 1024; // 2MB
+                  if (file.size > maxSizeInBytes) {
+                    setErrorImage(`Main image must be less than 2 MB. "${file.name}" is too large.`);
+                    e.target.value = '';
+                    return;
+                  }
+                  setErrorImage(null);
+                  setImageFile(file);
+                  setExistingImageUrl(null);
+                }
+              }}
               className="border border-gray-300 rounded-md p-1"
             />
             {errorImage && <p className="text-red-600 mt-1">{errorImage}</p>}
@@ -405,11 +413,20 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
             <div className="flex flex-wrap gap-2 mb-2">
               {/* Existing gallery images */}
               {existingGalleryUrls.map((url, i) => (
-                <div key={`existing-gallery-${i}`} className="relative w-32 h-20 rounded overflow-hidden border border-gray-300">
-                  <img src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${url}`} alt={`Gallery ${i + 1}`} className="object-cover w-full h-full" />
+                <div
+                  key={`existing-gallery-${i}`}
+                  className="relative w-32 h-20 rounded overflow-hidden border border-gray-300"
+                >
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${url}`}
+                    alt={`Gallery ${i + 1}`}
+                    className="object-cover w-full h-full"
+                  />
                   <button
                     type="button"
-                    onClick={() => handleRemoveExistingGalleryImage(i)}
+                    onClick={() =>
+                      setExistingGalleryUrls((prev) => prev.filter((_, idx) => idx !== i))
+                    }
                     className="absolute top-0 right-0 text-red-600 bg-white rounded-full p-1 hover:bg-red-200"
                     aria-label="Remove gallery image"
                   >
@@ -420,11 +437,16 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
 
               {/* New gallery file previews */}
               {galleryPreviews.map((url, i) => (
-                <div key={`new-gallery-${i}`} className="relative w-32 h-20 rounded overflow-hidden border border-gray-300">
+                <div
+                  key={`new-gallery-${i}`}
+                  className="relative w-32 h-20 rounded overflow-hidden border border-gray-300"
+                >
                   <img src={url} alt={`New Gallery ${i + 1}`} className="object-cover w-full h-full" />
                   <button
                     type="button"
-                    onClick={() => handleRemoveNewGalleryFile(i)}
+                    onClick={() =>
+                      setPhotoGalleryFiles((prev) => prev.filter((_, idx) => idx !== i))
+                    }
                     className="absolute top-0 right-0 text-red-600 bg-white rounded-full p-1 hover:bg-red-200"
                     aria-label="Remove new gallery image"
                   >
@@ -439,7 +461,20 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId }) => {
               type="file"
               accept="image/*"
               multiple
-              onChange={handlePhotoGalleryChange}
+              onChange={(e) => {
+                if (e.target.files) {
+                  const maxSizeInBytes = 2048 * 1024; // 2MB
+                  const filesArray = Array.from(e.target.files);
+                  const invalidFile = filesArray.find((file) => file.size > maxSizeInBytes);
+                  if (invalidFile) {
+                    setErrorGallery(`Each image must be less than 2 MB. "${invalidFile.name}" is too large.`);
+                    e.target.value = '';
+                    return;
+                  }
+                  setErrorGallery(null);
+                  setPhotoGalleryFiles((prev) => [...prev, ...filesArray]);
+                }
+              }}
               className="border border-gray-300 rounded-md p-1"
             />
             {errorGallery && <p className="text-red-600 mt-1">{errorGallery}</p>}

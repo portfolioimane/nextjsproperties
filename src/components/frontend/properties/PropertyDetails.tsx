@@ -7,6 +7,8 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import ContactForm from './ContactForm';
+
 import {
   FaRulerCombined,
   FaBed,
@@ -15,22 +17,16 @@ import {
   FaEnvelope,
   FaMapMarkerAlt,
   FaMoneyBillWave,
-  FaUser
+  FaUser,
+  FaCity,
+  FaTag,
+  FaHandshake,
 } from 'react-icons/fa';
 
 const PropertyDetails = () => {
   const property = useAppSelector((state) => state.properties.details);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
-
-const [name, setName] = useState('');
-const [email, setEmail] = useState('');
-const [phone, setPhone] = useState('');
-const [contactMethod, setContactMethod] = useState('email');
-const [visitDate, setVisitDate] = useState('');
-const [message, setMessage] = useState('');
-const [submitted, setSubmitted] = useState(false);
-
 
   if (!property) return <p className="text-center py-10">Loading property details...</p>;
 
@@ -46,14 +42,6 @@ const [submitted, setSubmitted] = useState(false);
   const openModal = (index: number) => {
     setStartIndex(index);
     setIsModalOpen(true);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setName('');
-    setEmail('');
-    setMessage('');
   };
 
   return (
@@ -93,7 +81,7 @@ const [submitted, setSubmitted] = useState(false);
               <div className="flex flex-wrap gap-4">
                 <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
                   <FaMoneyBillWave className="text-blue-600" />
-                  <span className="font-semibold">Price:</span> {property.price}
+                  <span className="font-semibold">Price:</span> {property.price} MAD
                 </div>
               </div>
 
@@ -112,6 +100,22 @@ const [submitted, setSubmitted] = useState(false);
                 </div>
               </div>
 
+              {/* New Fields: City, Type, Offer Type */}
+              <div className="flex flex-wrap gap-4 mt-2">
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
+                  <FaCity className="text-blue-600" />
+                  <span className="font-semibold">City:</span> {property.city || 'N/A'}
+                </div>
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
+                  <FaTag className="text-blue-600" />
+                  <span className="font-semibold">Type:</span> {property.type || 'N/A'}
+                </div>
+                <div className="flex-1 min-w-[150px] flex items-center gap-2 border p-3 rounded shadow-sm">
+                  <FaHandshake className="text-blue-600" />
+                  <span className="font-semibold">Offer:</span> {property.offer_type || 'N/A'}
+                </div>
+              </div>
+
               <div className="flex items-center gap-2 mt-4">
                 <FaMapMarkerAlt className="text-blue-600" />
                 <span className="font-semibold">Location:</span> {property.address || 'N/A'}
@@ -120,16 +124,16 @@ const [submitted, setSubmitted] = useState(false);
               <div className="pt-4 border-t mt-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <FaUser className="text-blue-600" />
-                  <strong>Owner:</strong> {property.owner_name || 'N/A'}
+                  <strong>Owner:</strong> {property.owner.name || 'N/A'}
                 </div>
                 <div className="flex items-center gap-2">
                   <FaPhone className="text-blue-600" />
-                  {property.owner_phone}
+                  {property.owner.phone}
                 </div>
-                {property.owner_email && (
+                {property.owner.email && (
                   <div className="flex items-center gap-2">
                     <FaEnvelope className="text-blue-600" />
-                    {property.owner_email}
+                    {property.owner.email}
                   </div>
                 )}
               </div>
@@ -138,107 +142,9 @@ const [submitted, setSubmitted] = useState(false);
         </div>
 
         {/* Right Side – Contact Form */}
-<div className="sticky top-20 self-start p-6 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
-  <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact the Owner</h2>
-
-  {submitted ? (
-    <div className="text-green-600 font-medium text-center">Thank you! Your message has been sent.</div>
-  ) : (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Name */}
-      <div>
-        <label htmlFor="name" className="text-sm font-medium text-gray-600">Your Name</label>
-        <input
-          id="name"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="John Doe"
-        />
-      </div>
-
-      {/* Email */}
-      <div>
-        <label htmlFor="email" className="text-sm font-medium text-gray-600">Your Email</label>
-        <input
-          id="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="you@example.com"
-        />
-      </div>
-
-      {/* Phone */}
-      <div>
-        <label htmlFor="phone" className="text-sm font-medium text-gray-600">Phone Number</label>
-        <input
-          id="phone"
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="+212 600 000 000"
-        />
-      </div>
-
-      {/* Preferred Contact Method */}
-      <div>
-        <label htmlFor="contactMethod" className="text-sm font-medium text-gray-600">Preferred Contact Method</label>
-        <select
-          id="contactMethod"
-          value={contactMethod}
-          onChange={(e) => setContactMethod(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        >
-          <option value="email">Email</option>
-          <option value="phone">Phone</option>
-        </select>
-      </div>
-
-      {/* Visit/Move-in Date */}
-      <div>
-        <label htmlFor="date" className="text-sm font-medium text-gray-600">Preferred Visit Date</label>
-        <input
-          id="date"
-          type="date"
-          value={visitDate}
-          onChange={(e) => setVisitDate(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
-
-      {/* Message */}
-      <div>
-        <label htmlFor="message" className="text-sm font-medium text-gray-600">Message</label>
-        <textarea
-          id="message"
-          rows={5}
-          required
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="I'm interested in this property..."
-        ></textarea>
-      </div>
-
-
-
-      {/* Submit */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
-      >
-        Send Inquiry
-      </button>
-    </form>
-  )}
-</div>
-
-
+        <div>
+          <ContactForm propertyId={property.id} />
+        </div>
       </div>
 
       {/* Fullscreen Modal Gallery */}

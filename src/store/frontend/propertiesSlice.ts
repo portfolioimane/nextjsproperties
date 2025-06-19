@@ -22,13 +22,17 @@ export interface Property {
   bathrooms: number;
   featured: boolean;
   photo_gallery: Photo[];
-  owner: Owner; // ✅ Add this
+  owner: Owner;
+  address: string;
+  city: string;         // Added city
+  type: string;         // Added type (e.g. apartment, villa)
+  offer_type: string;   // Added offer_type (e.g. rent, sale)
 }
 
 interface PropertiesState {
   list: Property[];
   loading: boolean;
-  details: Property | null; // ✅ Add this for property details
+  details: Property | null;
 }
 
 const initialState: PropertiesState = {

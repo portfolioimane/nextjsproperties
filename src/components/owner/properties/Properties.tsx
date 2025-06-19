@@ -12,12 +12,11 @@ const AdminProperties = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState<number | null>(null);
-
-    const [hasFetched, setHasFetched] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProperties());
-        setHasFetched(true);  // mark fetch as triggered
+    setHasFetched(true);
   }, [dispatch]);
 
   const handleDeleteClick = (id: number) => {
@@ -55,7 +54,7 @@ const AdminProperties = () => {
       </div>
 
       {/* Loading, Error, Empty */}
-{hasFetched && (
+      {hasFetched && (
         <>
           {loading ? (
             <p className="text-gray-600">Loading properties...</p>
@@ -64,85 +63,89 @@ const AdminProperties = () => {
           ) : properties.length === 0 ? (
             <p className="text-gray-500">No properties found.</p>
           ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-300 table-auto">
-            <thead className="bg-[#d4af37] text-white text-xs">
-              <tr>
-                <th className="border px-3 py-2">Main Image</th>
-                <th className="border px-3 py-2">Title</th>
-                <th className="border px-3 py-2">Price (MAD)</th>
-                <th className="border px-3 py-2">Rooms-bathrooms</th>
-                <th className="border px-3 py-2">Address</th>
-                <th className="border px-3 py-2">Description</th>
-                <th className="border px-3 py-2">Gallery</th>
-                <th className="border px-3 py-2">Featured</th>
-                <th className="border px-3 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white text-sm">
-              {properties.map((property) => (
-                <tr key={property.id} className="hover:bg-gray-50">
-                  <td className="border px-3 py-2">
-                    <img
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${property.image}`}
-                      alt={property.title}
-                      className="w-10 h-10 object-cover rounded"
-
-                    />
-                  </td>
-                  <td className="border px-3 py-2 font-semibold">{property.title}</td>
-                  <td className="border px-3 py-2 text-green-600 font-bold">{property.price}</td>
-                  <td className="border px-3 py-2">{property.rooms}R - {property.bathrooms}B</td>
-                  <td className="border px-3 py-2">{property.address}</td>
-                  <td className="border px-3 py-2">{property.description}</td>
-            
-                  <td className="border px-3 py-2">
-                    <div className="flex flex-wrap gap-2 max-w-xs max-h-24 overflow-auto">
-                      {property.photo_gallery?.length > 0 ? (
-                        property.photo_gallery.map((photo: any) => (
-                          <img
-                            key={photo.id}
-                            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${photo.photo_url}`}
-                            alt={`Gallery ${photo.id}`}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                        ))
-                      ) : (
-                        <span className="text-gray-400 text-xs">No photos</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="border px-3 py-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={property.featured}
-                      onChange={() => handleToggleFeatured(property)}
-                      className="w-5 h-5 cursor-pointer"
-                    />
-                  </td>
-                  <td className="border px-3 py-2">
-                    <div className="flex flex-col gap-2">
-                      <Link
-                        href={`/owner/properties/${property.id}/edit`}
-                        className="bg-[#d4af37] hover:bg-[#b7950b] text-white text-center py-1 rounded"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteClick(property.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white py-1 rounded"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-</>
+            <div className="overflow-x-auto">
+              <table className="w-full border border-gray-300 table-auto">
+                <thead className="bg-[#d4af37] text-white text-xs">
+                  <tr>
+                    <th className="border px-3 py-2">Main Image</th>
+                    <th className="border px-3 py-2">Title</th>
+                    <th className="border px-3 py-2">Price (MAD)</th>
+                    <th className="border px-3 py-2">Rooms - Bathrooms</th>
+                    <th className="border px-3 py-2">City</th>
+                    <th className="border px-3 py-2">Type</th>
+                    <th className="border px-3 py-2">Offer Type</th>
+                    <th className="border px-3 py-2">Address</th>
+                    <th className="border px-3 py-2">Description</th>
+                    <th className="border px-3 py-2">Gallery</th>
+                    <th className="border px-3 py-2">Featured</th>
+                    <th className="border px-3 py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white text-sm">
+                  {properties.map((property) => (
+                    <tr key={property.id} className="hover:bg-gray-50">
+                      <td className="border px-3 py-2">
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${property.image}`}
+                          alt={property.title}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      </td>
+                      <td className="border px-3 py-2 font-semibold">{property.title}</td>
+                      <td className="border px-3 py-2 text-green-600 font-bold">{property.price}</td>
+                      <td className="border px-3 py-2">{property.rooms}R - {property.bathrooms}B</td>
+                      <td className="border px-3 py-2">{property.city}</td>
+                      <td className="border px-3 py-2 capitalize">{property.type}</td>
+                      <td className="border px-3 py-2 capitalize">{property.offer_type}</td>
+                      <td className="border px-3 py-2">{property.address}</td>
+                      <td className="border px-3 py-2">{property.description}</td>
+                      <td className="border px-3 py-2">
+                        <div className="flex flex-wrap gap-2 max-w-xs max-h-24 overflow-auto">
+                          {property.photo_gallery?.length > 0 ? (
+                            property.photo_gallery.map((photo: any) => (
+                              <img
+                                key={photo.id}
+                                src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${photo.photo_url}`}
+                                alt={`Gallery ${photo.id}`}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                            ))
+                          ) : (
+                            <span className="text-gray-400 text-xs">No photos</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="border px-3 py-2 text-center">
+                        <input
+                          type="checkbox"
+                          checked={property.featured}
+                          onChange={() => handleToggleFeatured(property)}
+                          className="w-5 h-5 cursor-pointer"
+                        />
+                      </td>
+                      <td className="border px-3 py-2">
+                        <div className="flex flex-col gap-2">
+                          <Link
+                            href={`/owner/properties/${property.id}/edit`}
+                            className="bg-[#d4af37] hover:bg-[#b7950b] text-white text-center py-1 rounded"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteClick(property.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white py-1 rounded"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
 
       {/* Delete Confirmation Modal */}

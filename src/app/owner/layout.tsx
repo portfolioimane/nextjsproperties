@@ -72,7 +72,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
 
                     <li>
-                        <Link href="/owner/contact-messages" className="flex items-center space-x-2 hover:bg-[#1A3D8A] p-2 rounded transition-colors">
+                        <Link href="/owner/contactCRM" className="flex items-center space-x-2 hover:bg-[#1A3D8A] p-2 rounded transition-colors">
                             <i className="material-icons">message</i>
                             <span>Contact Messages</span>
                         </Link>

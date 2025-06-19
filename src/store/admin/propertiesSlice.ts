@@ -17,22 +17,23 @@ export interface Owner {
 // Then update Property type:
 export interface Property {
   id: number;
-
   title: string;
   description: string;
   price: string;
   image: string;
-  address: string;  // added address field
+  address: string;
+  city: string;           // NEW
+  type: string;           // NEW
+  offer_type: string;     // NEW
   area: number;
   rooms: number;
   bathrooms: number;
-  owner_id: number;   
+  owner_id: number;
   featured: boolean;
-  photo_gallery: Photo[]; // no "?" mark
-  owner: Owner; // ✅ Add this
-
-
+  photo_gallery: Photo[];
+  owner: Owner;
 }
+
 
 
 interface PropertiesState {

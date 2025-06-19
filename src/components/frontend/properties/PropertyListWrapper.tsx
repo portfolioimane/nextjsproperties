@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/store/hooks';
-import { setProperties, Property } from '@/store/propertiesSlice'; // ✅ Import the Property type
+import { setProperties, Property } from '@/store/frontend/propertiesSlice'; // ✅ Import the Property type
 import PropertyList from './PropertyList';
 
 interface PropertyListWrapperProps {

@@ -1,9 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
-import { FaRulerCombined, FaBed, FaBath, FaPhone, FaEnvelope, FaStar } from 'react-icons/fa';
+import { FaRulerCombined, FaBed, FaBath, FaStar } from 'react-icons/fa';
 
 const PropertyList = () => {
+  const router = useRouter();
   const { list, loading } = useAppSelector((state) => state.properties);
 
   if (loading) {
@@ -29,11 +31,7 @@ const PropertyList = () => {
                 alt={property.title}
                 className="w-full h-48 object-cover"
               />
-              {property.featured ? (
-                <div className="absolute top-3 left-3 bg-yellow-400 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg">
-                  <FaStar /> Featured
-                </div>
-              ) : null}
+        
             </div>
 
             <div className="p-5">
@@ -46,7 +44,20 @@ const PropertyList = () => {
 
               <p className="text-gray-600 text-sm mt-1 line-clamp-3">{property.description}</p>
 
-              <p className="mt-4 text-[#D4AF37] font-bold text-lg">{property.price}</p>
+              {/* Display City, Type, Offer Type */}
+              <div className="mt-2 flex flex-wrap gap-3 text-sm text-gray-700">
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                  City: {property.city || '-'}
+                </span>
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium capitalize">
+                  Type: {property.type || '-'}
+                </span>
+                <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full font-medium capitalize">
+                  Offer: {property.offer_type || '-'}
+                </span>
+              </div>
+
+              <p className="mt-4 text-[#D4AF37] font-bold text-lg">{property.price} MAD</p>
 
               <div className="flex flex-wrap gap-4 mt-4 text-gray-700 text-sm">
                 <div className="flex items-center gap-1" title="Area (m²)">
@@ -60,25 +71,12 @@ const PropertyList = () => {
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 mt-5 pt-4 text-gray-600 text-sm space-y-1">
-                <p>
-                  <span className="font-semibold text-blue-700">Owner:</span> {property.owner.name}
-                </p>
-                <p className="flex items-center gap-2">
-                  <FaPhone className="text-blue-600" />
-                  <a href={`tel:${property.owner.phone}`} className="hover:underline">
-                    {property.owner.phone}
-                  </a>
-                </p>
-                {property.owner.email && (
-                  <p className="flex items-center gap-2">
-                    <FaEnvelope className="text-blue-600" />
-                    <a href={`mailto:${property.owner.email}`} className="hover:underline">
-                      {property.owner.email}
-                    </a>
-                  </p>
-                )}
-              </div>
+              <button
+                onClick={() => router.push(`/properties/${property.id}`)}
+                className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-colors"
+              >
+                View Details
+              </button>
             </div>
           </div>
         ))}
