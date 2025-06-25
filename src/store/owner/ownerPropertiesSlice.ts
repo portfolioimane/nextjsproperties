@@ -48,27 +48,27 @@ const initialState: PropertiesState = {
 };
 
 // Async thunks for API actions
-export const fetchProperties = createAsyncThunk('properties/fetchAll', async () => {
-  const response = await axios.get('/owner/properties');
+export const fetchProperties = createAsyncThunk('ownerproperties/fetchAll', async () => {
+  const response = await axios.get('/owner/ownerproperties');
   return response.data;
 });
 
-export const fetchPropertyById = createAsyncThunk('properties/fetchById', async (id: number) => {
-  const response = await axios.get(`/owner/properties/${id}`);
+export const fetchPropertyById = createAsyncThunk('ownerproperties/fetchById', async (id: number) => {
+  const response = await axios.get(`/owner/ownerproperties/${id}`);
   return response.data;
 });
 
-export const addProperty = createAsyncThunk('properties/add', async (formData: FormData, { dispatch }) => {
-  await axios.post('/owner/properties', formData, {
+export const addProperty = createAsyncThunk('ownerproperties/add', async (formData: FormData, { dispatch }) => {
+  await axios.post('/owner/ownerproperties', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   dispatch(fetchProperties());
 });
 
 export const updateProperty = createAsyncThunk(
-  'properties/update',
+  'ownerproperties/update',
   async ({ id, formData }: { id: number; formData: FormData }, { dispatch }) => {
-    await axios.post(`/owner/properties/${id}`, formData, {
+    await axios.post(`/owner/ownerproperties/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       params: { _method: 'PUT' },
     });
@@ -76,18 +76,18 @@ export const updateProperty = createAsyncThunk(
   }
 );
 
-export const deleteProperty = createAsyncThunk('properties/delete', async (id: number, { dispatch }) => {
-  await axios.delete(`/owner/properties/${id}`);
+export const deleteProperty = createAsyncThunk('ownerproperties/delete', async (id: number, { dispatch }) => {
+  await axios.delete(`/owner/ownerproperties/${id}`);
   dispatch(fetchProperties());
 });
 
-export const toggleFeatured = createAsyncThunk('properties/toggleFeatured', async (id: number, { dispatch }) => {
-  await axios.put(`/owner/properties/${id}/toggle-featured`);
+export const toggleFeatured = createAsyncThunk('ownerproperties/toggleFeatured', async (id: number, { dispatch }) => {
+  await axios.put(`/owner/ownerproperties/${id}/toggle-featured`);
   dispatch(fetchProperties());
 });
 
-const propertiesSlice = createSlice({
-  name: 'properties',
+const ownerpropertiesSlice = createSlice({
+  name: 'ownerproperties',
   initialState,
   reducers: {
     clearCurrent(state) {
@@ -106,7 +106,7 @@ const propertiesSlice = createSlice({
       })
       .addCase(fetchProperties.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch properties';
+        state.error = action.error.message || 'Failed to fetch ownerproperties';
       })
       .addCase(fetchPropertyById.pending, (state) => {
         state.loading = true;
@@ -123,5 +123,5 @@ const propertiesSlice = createSlice({
   },
 });
 
-export const { clearCurrent } = propertiesSlice.actions;
-export default propertiesSlice.reducer;
+export const { clearCurrent } = ownerpropertiesSlice.actions;
+export default ownerpropertiesSlice.reducer;

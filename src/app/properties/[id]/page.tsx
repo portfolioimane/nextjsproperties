@@ -1,5 +1,5 @@
 // app/properties/[id]/page.tsx
-import PropertyDetailsWrapper from '@/components/frontend/properties/PropertyDetailsWrapper';
+import PropertyDetailsWrapper from '@/components/frontend/properties/propertydetails/PropertyDetailsWrapper';
 import api from '@/utils/axios';
 
 interface Params {

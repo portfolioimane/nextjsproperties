@@ -24,19 +24,21 @@ export interface Property {
   photo_gallery: Photo[];
   owner: Owner;
   address: string;
-  city: string;         // Added city
-  type: string;         // Added type (e.g. apartment, villa)
-  offer_type: string;   // Added offer_type (e.g. rent, sale)
+  city: string;
+  type: string;
+  offer_type: string;
 }
 
 interface PropertiesState {
   list: Property[];
+  popular: Property[];         // ✅ added
   loading: boolean;
   details: Property | null;
 }
 
 const initialState: PropertiesState = {
   list: [],
+  popular: [],                 // ✅ initialized
   loading: false,
   details: null,
 };
@@ -48,11 +50,19 @@ const propertiesSlice = createSlice({
     setProperties(state, action: PayloadAction<Property[]>) {
       state.list = action.payload;
     },
+    setPopularProperties(state, action: PayloadAction<Property[]>) { // ✅ new reducer
+      state.popular = action.payload;
+    },
     setPropertyDetails(state, action: PayloadAction<Property>) {
       state.details = action.payload;
     },
   },
 });
 
-export const { setProperties, setPropertyDetails } = propertiesSlice.actions;
+export const {
+  setProperties,
+  setPopularProperties,  // ✅ export this
+  setPropertyDetails,
+} = propertiesSlice.actions;
+
 export default propertiesSlice.reducer;

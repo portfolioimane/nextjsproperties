@@ -16,9 +16,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const [isPropertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
-    const [isCustomizeDropdownOpen, setCustomizeDropdownOpen] = useState(false);
     const [isSettingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
-    const [isReviewsDropdownOpen, setReviewsDropdownOpen] = useState(false);
     const [isOwnersDropdownOpen, setOwnersDropdownOpen] = useState(false);
 
     const toggleDropdown = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -95,67 +93,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     </li>
 
                     <li>
-                        <Link href="/admin/bookings" className="flex items-center space-x-2 hover:bg-[#1A3D8A] p-2 rounded transition-colors">
+                        <Link href="/admin/plans" className="flex items-center space-x-2 hover:bg-[#1A3D8A] p-2 rounded transition-colors">
                             <i className="material-icons">assignment_turned_in</i>
-                            <span>Manage Bookings</span>
+                            <span>Manage Plans</span>
                         </Link>
                     </li>
 
-             
 
-                    <li>
-                        <div
-                            onClick={() => toggleDropdown(setReviewsDropdownOpen)}
-                            className="flex items-center justify-between space-x-2 hover:bg-[#1A3D8A] p-2 rounded cursor-pointer transition-colors"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <i className="material-icons">reviews</i>
-                                <span>Manage Reviews</span>
-                            </div>
-                            <i className="material-icons">{isReviewsDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'}</i>
-                        </div>
-                        {isReviewsDropdownOpen && (
-                            <ul className="ml-6 mt-2 space-y-1">
-                                <li>
-                                    <Link href="/admin/reviews" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        All Reviews
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/admin/reviews/add" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        Add Review
-                                    </Link>
-                                </li>
-                            </ul>
-                        )}
-                    </li>
 
-                    <li>
-                        <div
-                            onClick={() => toggleDropdown(setCustomizeDropdownOpen)}
-                            className="flex items-center justify-between space-x-2 hover:bg-[#1A3D8A] p-2 rounded cursor-pointer transition-colors"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <i className="material-icons">palette</i>
-                                <span>Customize Website</span>
-                            </div>
-                            <i className="material-icons">{isCustomizeDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'}</i>
-                        </div>
-                        {isCustomizeDropdownOpen && (
-                            <ul className="ml-6 mt-2 space-y-1">
-                                <li>
-                                    <Link href="/admin/generalcustomize" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        General
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/admin/customize/homepageheader" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        Hero Section
-                                    </Link>
-                                </li>
-                            </ul>
-                        )}
-                    </li>
 
                     <li>
                         <div
@@ -175,26 +120,12 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                                         Payments
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link href="/admin/emailsetting" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        Email Settings
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/admin/smssetting" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        SMS Settings
-                                    </Link>
-                                </li>
+                       
                             </ul>
                         )}
                     </li>
 
-                    <li>
-                        <Link href="/admin/contact-messages" className="flex items-center space-x-2 hover:bg-[#1A3D8A] p-2 rounded transition-colors">
-                            <i className="material-icons">message</i>
-                            <span>Contact Messages</span>
-                        </Link>
-                    </li>
+                
                 </ul>
             </aside>
 

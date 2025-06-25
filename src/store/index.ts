@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import propertiesReducer from './frontend/propertiesSlice'
 import propertiesadminReducer from './admin/propertiesSlice'
+import planAdminReducer from './admin/planAdminSlice'
+
 import propertiesownerReducer from './owner/ownerPropertiesSlice'
 import ownerContactCRMReducer from './owner/ownerContactCRMSlice'
+import subscriptionReducer from './owner/subscriptionSlice'
+
 import ownersReducer from './admin/ownersSlice';
 import authReducer from './authSlice';
 import contactOwnerReducer from './frontend/contactOwnerSlice';
@@ -16,9 +20,11 @@ export const store = configureStore({
     properties: propertiesReducer,
     auth: authReducer,
     propertiesadmin: propertiesadminReducer,
+    planAdmin: planAdminReducer,
     owners: ownersReducer,
     propertiesowner: propertiesownerReducer,
     ownerContactCRM: ownerContactCRMReducer,
+    subscription: subscriptionReducer,
     contactOwner: contactOwnerReducer,
 
 
