@@ -107,68 +107,74 @@ export default function ContactCRM() {
       {status === 'succeeded' && contacts.length === 0 && <p>No contacts found.</p>}
 
       {status === 'succeeded' && contacts.length > 0 && (
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
-          <table className="min-w-full table-auto text-sm text-gray-800">
-            <thead className="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider">
-              <tr>
-                <th className="p-3 text-left">Client</th>
-                 <th className="p-3">Property</th> 
-                <th className="p-3">Email</th>
-                <th className="p-3">Phone</th>
-                <th className="p-3">Message</th>
-                <th className="p-3">Project Type</th>
-                <th className="p-3">Lead Source</th>
-                <th className="p-3">Stage</th>
-                <th className="p-3">Last Contact</th>
-                <th className="p-3">Next Step</th>
-                <th className="p-3">Notes</th>
-                <th className="p-3">Competitor</th>
-                <th className="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {contacts.map((contact) => (
-                <tr key={contact.id} className="hover:bg-gray-50 transition">
-                  <td className="p-3 font-medium">{contact.client_name}</td>
-                      <td className="p-3">{contact.property?.title || '-'}</td> 
-                  <td className="p-3">{contact.email}</td>
-                  <td className="p-3">{contact.phone_whatsapp || '-'}</td>
-                  <td className="p-3 text-gray-600 max-w-xs truncate" title={contact.message || ''}>
-                    {contact.message || '-'}
-                  </td>
-                  <td className="p-3">{contact.project_type || '-'}</td>
-                  <td className="p-3">{contact.lead_source || '-'}</td>
-                  <td className="p-3">
-                    <span className={`text-xs px-2 py-1 rounded-full font-semibold ${stageColors[contact.stage] || ''}`}>
-                      {contact.stage?.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="p-3">{formatDate(contact.last_contact)}</td>
-                  <td className="p-3">{contact.next_step || '-'}</td>
-                  <td className="p-3 text-gray-600 max-w-xs truncate" title={contact.notes || ''}>
-                    {contact.notes || '-'}
-                  </td>
-                  <td className="p-3">{contact.competitor || '-'}</td>
-                  <td className="p-3 flex space-x-2">
-                    <button
-                      onClick={() => startEdit(contact)}
-                      title="Edit"
-                      className="p-2 rounded text-blue-600 hover:bg-blue-100"
-                    >
-                      <FiEdit />
-                    </button>
-                    <button
-                      onClick={() => confirmDeleteContact(contact.id)}
-                      title="Delete"
-                      className="p-2 rounded text-red-600 hover:bg-red-100"
-                    >
-                      <FiTrash2 />
-                    </button>
-                  </td>
+        <div className="bg-white rounded-lg shadow overflow-x-auto w-full">
+          <div className="min-w-[1400px]">
+            <table className="w-full table-auto text-sm text-gray-800">
+              <thead className="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="p-3 text-left">Client</th>
+                  <th className="p-3">Property</th>
+                  <th className="p-3">Email</th>
+                  <th className="p-3">Phone</th>
+                  <th className="p-3">Message</th>
+                  <th className="p-3">Project Type</th>
+                  <th className="p-3">Lead Source</th>
+                  <th className="p-3">Stage</th>
+                  <th className="p-3">Last Contact</th>
+                  <th className="p-3">Next Step</th>
+                  <th className="p-3">Notes</th>
+                  <th className="p-3">Competitor</th>
+                  <th className="p-3" style={{ minWidth: 120 }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {contacts.map((contact) => (
+                  <tr key={contact.id} className="hover:bg-gray-50 transition">
+                    <td className="p-3 font-medium">{contact.client_name}</td>
+                    <td className="p-3">{contact.property?.title || '-'}</td>
+                    <td className="p-3">{contact.email}</td>
+                    <td className="p-3">{contact.phone_whatsapp || '-'}</td>
+                    <td className="p-3 text-gray-600 max-w-xs truncate" title={contact.message || ''}>
+                      {contact.message || '-'}
+                    </td>
+                    <td className="p-3">{contact.project_type || '-'}</td>
+                    <td className="p-3">{contact.lead_source || '-'}</td>
+                    <td className="p-3">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                          stageColors[contact.stage] || ''
+                        }`}
+                      >
+                        {contact.stage?.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="p-3">{formatDate(contact.last_contact)}</td>
+                    <td className="p-3">{contact.next_step || '-'}</td>
+                    <td className="p-3 text-gray-600 max-w-xs truncate" title={contact.notes || ''}>
+                      {contact.notes || '-'}
+                    </td>
+                    <td className="p-3">{contact.competitor || '-'}</td>
+                    <td className="p-3 flex space-x-2" style={{ minWidth: 120 }}>
+                      <button
+                        onClick={() => startEdit(contact)}
+                        title="Edit"
+                        className="p-2 rounded text-blue-600 hover:bg-blue-100"
+                      >
+                        <FiEdit />
+                      </button>
+                      <button
+                        onClick={() => confirmDeleteContact(contact.id)}
+                        title="Delete"
+                        className="p-2 rounded text-red-600 hover:bg-red-100"
+                      >
+                        <FiTrash2 />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

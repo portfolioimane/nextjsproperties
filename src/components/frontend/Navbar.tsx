@@ -43,12 +43,17 @@ const Navbar = () => {
     user?.role === 'admin' ? '/admin/dashboard' : '/customerdashboard/mybookings';
 
   return (
-   <nav className="bg-white shadow-md sticky top-0 z-50">
+<nav className="bg-white shadow-md sticky top-0 z-50">
   <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
     {/* Brand */}
-    <Link href="/" className="text-2xl font-extrabold text-blue-700 tracking-wide">
-      MyRealEstate
+    <Link href="/" className="flex items-center">
+      <img
+        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/logo.png`}
+        alt="Logo"
+        className="h-16 w-auto"
+      />
     </Link>
+
 
     {/* Desktop Menu */}
     <div className="hidden md:flex items-center space-x-6">

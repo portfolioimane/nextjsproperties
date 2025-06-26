@@ -6,6 +6,8 @@ import planAdminReducer from './admin/planAdminSlice'
 import propertiesownerReducer from './owner/ownerPropertiesSlice'
 import ownerContactCRMReducer from './owner/ownerContactCRMSlice'
 import subscriptionReducer from './owner/subscriptionSlice'
+import paymentReducer from './owner/paymentSlice'
+import searchReducer from './frontend/searchPropertySlice';
 
 import ownersReducer from './admin/ownersSlice';
 import authReducer from './authSlice';
@@ -26,8 +28,8 @@ export const store = configureStore({
     ownerContactCRM: ownerContactCRMReducer,
     subscription: subscriptionReducer,
     contactOwner: contactOwnerReducer,
-
-
+    searchProperty:searchReducer,
+    payment:paymentReducer,
 
   },
 })

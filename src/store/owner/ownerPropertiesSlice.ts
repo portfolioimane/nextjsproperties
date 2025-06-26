@@ -18,7 +18,7 @@ export interface Property {
   id: number;
   title: string;
   description: string;
-  price: string;
+  price: number; 
   image: string;
   address: string;  
   city: string;          // added city

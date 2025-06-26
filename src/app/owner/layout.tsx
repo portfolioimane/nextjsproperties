@@ -88,9 +88,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 overflow-x-hidden">
       {/* Sidebar */}
-      <aside className="w-64 bg-blue-900 text-white flex flex-col">
+      <aside className="w-64 bg-blue-900 text-white flex flex-col flex-shrink-0">
         <div className="p-6 border-b border-blue-800">
           <h1 className="text-2xl font-bold text-yellow-400">Owner Dashboard</h1>
         </div>
@@ -168,7 +168,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col min-w-0">
         <header className="flex justify-between items-center px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
           <Link
             href="/"

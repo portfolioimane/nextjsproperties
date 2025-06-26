@@ -24,7 +24,7 @@ export interface Subscription {
 }
 
 interface SubscriptionState {
-  data: Subscription | null;  // user's subscription with plan nested
+  data: Subscription | null;
   loading: boolean;
   error: string | null;
   success: string | null;
@@ -33,7 +33,7 @@ interface SubscriptionState {
   checkingLimit: boolean;
   limitError: string | null;
 
-  plans: Plan[];               // list of available plans
+  plans: Plan[];
   plansLoading: boolean;
   plansError: string | null;
 }
@@ -66,12 +66,16 @@ export const fetchSubscription = createAsyncThunk(
   }
 );
 
-// Subscribe to a plan by plan id or name (adjust backend accordingly)
-export const subscribe = createAsyncThunk(
+// Subscribe to a plan by plan id AND paymentMethod (new signature)
+export const subscribe = createAsyncThunk<
+  Subscription,
+  { planId: number; paymentMethod: 'stripe' | 'paypal' },
+  { rejectValue: string }
+>(
   'subscription/subscribe',
-  async (planId: number, { rejectWithValue }) => {
+  async ({ planId, paymentMethod }, { rejectWithValue }) => {
     try {
-      const res = await api.post('/owner/subscribe', { plan_id: planId });
+      const res = await api.post('/owner/subscribe', { plan_id: planId, payment_method: paymentMethod });
       return res.data as Subscription;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || 'Subscription failed');
@@ -79,7 +83,7 @@ export const subscribe = createAsyncThunk(
   }
 );
 
-// Cancel subscription (optional, remove if you don't want cancel)
+// Cancel subscription (optional)
 export const cancelSubscription = createAsyncThunk(
   'subscription/cancel',
   async (_, { rejectWithValue }) => {
@@ -123,7 +127,7 @@ export const checkPropertyLimit = createAsyncThunk<
     if (propertyCount === null) {
       return rejectWithValue('Property count not loaded');
     }
-    if (propertyCount >= subscription.plan.max_properties) {  // use plan.max_properties
+    if (propertyCount >= subscription.plan.max_properties) {
       return rejectWithValue('Property limit reached. Please upgrade your plan.');
     }
   }

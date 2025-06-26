@@ -1,7 +1,7 @@
-// app/page.tsx or app/home/page.tsx (for Next.js 13+ app directory)
 import PopularPropertyWrapper from '@/components/frontend/properties/popularproperties/PopularPropertyWrapper';
+import SearchProperties from '@/components/frontend/properties/searchProperties'; // <-- import here
 import api from '@/utils/axios';
-import { FaSearch, FaCheckCircle } from 'react-icons/fa';
+import { FaCheckCircle } from 'react-icons/fa';
 
 const Home = async () => {
   const res = await api.get('/popular-properties');
@@ -12,20 +12,18 @@ const Home = async () => {
     <div className="font-sans text-gray-800">
 
       {/* Hero */}
-      <section className="bg-blue-50 py-20 px-6 text-center">
-        <h2 className="text-4xl font-bold text-blue-800 mb-4">Find Your Perfect Home</h2>
-        <p className="text-gray-600 mb-8">Explore top properties in your city with the best prices and locations.</p>
-        <div className="max-w-2xl mx-auto flex bg-white shadow-md rounded-full overflow-hidden">
-          <input
-            type="text"
-            placeholder="Search by city, type, or price..."
-            className="flex-grow px-6 py-3 outline-none"
-          />
-          <button className="bg-blue-600 text-white px-6 flex items-center gap-2">
-            <FaSearch /> Search
-          </button>
-        </div>
-      </section>
+     <section
+  className="min-h-screen py-20 px-6 text-center bg-cover bg-center bg-no-repeat"
+  style={{
+    backgroundImage: `url(${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/hero.jpg)`,
+  }}
+>
+  <div className="bg-white bg-opacity-80 p-8 rounded-xl inline-block">
+    <h2 className="text-4xl font-bold text-blue-800 mb-4">Find Your Perfect Home</h2>
+    <p className="text-gray-600 mb-8">Explore top properties in your city with the best prices and locations.</p>
+    <SearchProperties />
+  </div>
+</section>
 
 
       {/* Property List */}
@@ -79,4 +77,3 @@ const Home = async () => {
 };
 
 export default Home;
-

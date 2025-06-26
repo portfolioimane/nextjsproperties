@@ -33,7 +33,7 @@ const PropertyList = () => {
     <section className="max-w-7xl mx-auto px-4 py-10">
       {/* Browse by Category */}
       <div className="mb-10 text-center">
-        <h2 className="text-2xl font-bold text-blue-800 mb-4">Browse by Category</h2>
+        <h2 className="text-2xl font-bold text-blue-800 mb-4">Popular Properties</h2>
         <div className="flex flex-wrap justify-center gap-3">
           <button
             className={`px-4 py-2 rounded-full text-sm font-semibold border ${

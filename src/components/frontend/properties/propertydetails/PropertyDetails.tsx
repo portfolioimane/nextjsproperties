@@ -7,7 +7,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import ContactForm from './ContactForm';
+import ContactForm from '../ContactForm';
 
 import {
   FaRulerCombined,
