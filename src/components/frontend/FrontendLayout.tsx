@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/frontend/Navbar';
 import Footer from '@/components/frontend/Footer';
+import Chatbot from '@/components/frontend/Chatbot';
 
 const FrontendLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ const FrontendLayout = ({ children }: { children: React.ReactNode }) => {
           <main className="flex-grow">
             {children}
           </main>
+                    <Chatbot />
           <Footer />
         </div>
       ) : (

@@ -1,23 +1,30 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from '@/utils/axios';
 
-// Define interfaces first
+// --- Interfaces ---
+
 interface CreatePaymentIntentPayload {
   planId: number;
   amount: number;
 }
 
+interface VerifyPaypalPaymentPayload {
+  orderID: string;
+}
+
 interface PaymentState {
   clientSecret: string | null;
+  paypalVerificationResult: any | null; // can refine type if you want
   loading: boolean;
   error: string | null;
 }
 
-// Then async thunk using the interfaces
+// --- Async Thunks ---
+
 export const createPaymentIntent = createAsyncThunk<
-  string, // return type: clientSecret string
-  CreatePaymentIntentPayload, // argument type
-  { rejectValue: string } // thunkAPI type
+  string, // return clientSecret
+  CreatePaymentIntentPayload,
+  { rejectValue: string }
 >(
   'payment/createPaymentIntent',
   async ({ planId, amount }, { rejectWithValue }) => {
@@ -30,25 +37,46 @@ export const createPaymentIntent = createAsyncThunk<
   }
 );
 
-// Initial state typed with interface
+export const verifyPaypalPayment = createAsyncThunk<
+  any, // return the full verification result (you can type it more strictly)
+  VerifyPaypalPaymentPayload,
+  { rejectValue: string }
+>(
+  'payment/verifyPaypalPayment',
+  async ({ orderID }, { rejectWithValue }) => {
+    try {
+      const res = await axios.post('/owner/paypal/verify', { orderID });
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'PayPal payment verification failed');
+    }
+  }
+);
+
+// --- Initial State ---
+
 const initialState: PaymentState = {
   clientSecret: null,
+  paypalVerificationResult: null,
   loading: false,
   error: null,
 };
 
-// Then createSlice using the initialState and extraReducers
+// --- Slice ---
+
 const paymentSlice = createSlice({
   name: 'payment',
   initialState,
   reducers: {
     clearPaymentState: (state) => {
       state.clientSecret = null;
+      state.paypalVerificationResult = null;
       state.loading = false;
       state.error = null;
     },
   },
   extraReducers: (builder) => {
+    // Stripe payment intent
     builder
       .addCase(createPaymentIntent.pending, (state) => {
         state.loading = true;
@@ -60,7 +88,22 @@ const paymentSlice = createSlice({
       })
       .addCase(createPaymentIntent.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.payload || 'Failed to create payment intent';
+      });
+
+    // PayPal verification
+    builder
+      .addCase(verifyPaypalPayment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyPaypalPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.paypalVerificationResult = action.payload;
+      })
+      .addCase(verifyPaypalPayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'PayPal verification failed';
       });
   },
 });

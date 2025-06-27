@@ -12,6 +12,9 @@ import searchReducer from './frontend/searchPropertySlice';
 import ownersReducer from './admin/ownersSlice';
 import authReducer from './authSlice';
 import contactOwnerReducer from './frontend/contactOwnerSlice';
+import chatbotReducer from './frontend/chatbotSlice';
+import dashboardReducer from './dashboardSlice';
+
 
 // store/index.ts or store/store.ts
 
@@ -30,7 +33,8 @@ export const store = configureStore({
     contactOwner: contactOwnerReducer,
     searchProperty:searchReducer,
     payment:paymentReducer,
-
+    chatbot:chatbotReducer,
+    dashboard:dashboardReducer,
   },
 })
 

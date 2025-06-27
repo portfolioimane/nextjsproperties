@@ -2,6 +2,8 @@ import PopularPropertyWrapper from '@/components/frontend/properties/popularprop
 import SearchProperties from '@/components/frontend/properties/searchProperties'; // <-- import here
 import api from '@/utils/axios';
 import { FaCheckCircle } from 'react-icons/fa';
+import Link from 'next/link';
+
 
 const Home = async () => {
   const res = await api.get('/popular-properties');
@@ -64,13 +66,17 @@ const Home = async () => {
       </section>
 
       {/* Call to Action */}
-      <section className="bg-blue-600 text-white py-16 text-center px-6">
-        <h3 className="text-3xl font-bold mb-4">Want to List Your Property?</h3>
-        <p className="mb-6">Join our platform and reach thousands of buyers and renters.</p>
-        <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
-          Get Started
-        </button>
-      </section>
+
+<section className="bg-blue-600 text-white py-16 text-center px-6">
+  <h3 className="text-3xl font-bold mb-4">Want to List Your Property?</h3>
+  <p className="mb-6">Join our platform and reach thousands of buyers and renters.</p>
+  <Link href="/register" passHref>
+    <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
+      Get Started
+    </button>
+  </Link>
+</section>
+
 
     </div>
   );
