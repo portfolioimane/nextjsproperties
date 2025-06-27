@@ -60,6 +60,7 @@ export const fetchSubscription = createAsyncThunk(
     try {
       const res = await api.get('/owner/subscription');
       return res.data as Subscription;
+      console.log('susbscription',res.data);
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || 'Failed to fetch subscription');
     }

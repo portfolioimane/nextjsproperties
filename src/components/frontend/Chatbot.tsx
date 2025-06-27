@@ -16,7 +16,8 @@ const Chatbot = () => {
   const messages = useSelector((state: RootState) => selectChatMessages(state)) as ChatMessage[];
 
   const [input, setInput] = useState('');
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false); // default to closed
+  const [welcomeSent, setWelcomeSent] = useState(false); // track if welcome was sent
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll to bottom when messages update
@@ -24,14 +25,14 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Add welcome bot message once
+  // Show welcome message when chat opens (only once)
   useEffect(() => {
-    if (open && messages.length === 0) {
-      dispatch(
-        addBotMessage("👋 Hello! I’m your friendly AI chatbot. Ask me anything about properties!")
-      );
+    if (open && messages.length === 0 && !welcomeSent) {
+      dispatch(addBotMessage("👋 Hello! I’m your friendly AI chatbot. Ask me anything about properties!"));
+      dispatch(addBotMessage("Tap a city to see"));
+      setWelcomeSent(true);
     }
-  }, [open, messages.length, dispatch]);
+  }, [open, messages.length, welcomeSent, dispatch]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -78,8 +79,8 @@ const Chatbot = () => {
               key={idx}
               className={`max-w-[75%] px-4 py-2 rounded-lg ${
                 msg.from === 'bot'
-                  ? 'ml-auto bg-blue-600 text-white rounded-br-none'  // Bot message (right)
-                  : 'mr-auto bg-gray-200 text-gray-900 rounded-bl-none' // User message (left)
+                  ? 'ml-auto bg-blue-600 text-white rounded-br-none'
+                  : 'mr-auto bg-gray-200 text-gray-900 rounded-bl-none'
               }`}
             >
               {msg.text}

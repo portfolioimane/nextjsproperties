@@ -31,27 +31,35 @@ const OwnersView = () => {
 
       {!loading && !error && owners.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse border border-gray-300 bg-white">
-            <thead>
-              <tr style={{ backgroundColor: '#D4AF37' }} className="text-left text-white">
-                <th className="border border-gray-300 px-4 py-3 font-semibold">Name</th>
-                <th className="border border-gray-300 px-4 py-3 font-semibold">Email</th>
-                <th className="border border-gray-300 px-4 py-3 font-semibold">Phone</th>
-              </tr>
-            </thead>
-            <tbody>
-              {owners.map((owner) => (
-                <tr
-                  key={owner.id}
-                  className="hover:bg-yellow-50 transition-colors duration-200"
-                >
-                  <td className="border border-gray-300 px-4 py-3">{owner.name}</td>
-                  <td className="border border-gray-300 px-4 py-3">{owner.email}</td>
-                  <td className="border border-gray-300 px-4 py-3">{owner.phone || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  <table className="min-w-full border-collapse border border-gray-300 bg-white">
+  <thead>
+    <tr style={{ backgroundColor: '#D4AF37' }} className="text-left text-white">
+      <th className="border border-gray-300 px-4 py-3 font-semibold">Name</th>
+      <th className="border border-gray-300 px-4 py-3 font-semibold">Email</th>
+      <th className="border border-gray-300 px-4 py-3 font-semibold">Phone</th>
+      <th className="border border-gray-300 px-4 py-3 font-semibold">Plan</th>
+      <th className="border border-gray-300 px-4 py-3 font-semibold">Expires At</th>
+      <th className="border border-gray-300 px-4 py-3 font-semibold">Payment Method</th>
+    </tr>
+  </thead>
+  <tbody>
+    {owners.map((owner) => (
+      <tr key={owner.id} className="hover:bg-yellow-50 transition-colors duration-200">
+        <td className="border border-gray-300 px-4 py-3">{owner.name}</td>
+        <td className="border border-gray-300 px-4 py-3">{owner.email}</td>
+        <td className="border border-gray-300 px-4 py-3">{owner.phone || '-'}</td>
+        <td className="border border-gray-300 px-4 py-3">{owner.subscription?.plan?.name || '-'}</td>
+        <td className="border border-gray-300 px-4 py-3">
+          {owner.subscription?.expires_at
+            ? new Date(owner.subscription.expires_at).toLocaleDateString()
+            : '-'}
+        </td>
+        <td className="border border-gray-300 px-4 py-3">{owner.subscription?.payment_method || '-'}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
         </div>
       )}
       </>

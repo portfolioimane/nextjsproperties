@@ -35,7 +35,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const reachedPropertyLimit =
     isSubscribed &&
     typeof propertyCount === 'number' &&
-    propertyCount >= (subscription?.max_properties || 0);
+    propertyCount >= (subscription.plan?.max_properties || 0);
 
   const userMessage = reachedPropertyLimit
     ? 'You have reached your property limit. You cannot create more properties.'

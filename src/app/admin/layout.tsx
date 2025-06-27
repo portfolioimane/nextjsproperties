@@ -83,11 +83,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                                         View Properties
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link href="/admin/properties/add" className="block hover:bg-[#1A3D8A] p-2 rounded">
-                                        Add Property
-                                    </Link>
-                                </li>
+                              
                             </ul>
                         )}
                     </li>

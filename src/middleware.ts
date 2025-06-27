@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
       // 🔒 Block access to /owner/properties/add if limit reached
       if (pathname === '/owner/properties/add') {
         const propertyCount = await fetchPropertyCount(cookieHeader, xsrfToken, request.url);
-        const maxProperties = subscription?.max_properties ?? 0;
+        const maxProperties = subscription.plan?.max_properties ?? 0;
 
         if (propertyCount >= maxProperties) {
           return NextResponse.redirect(new URL('/owner/properties', request.url));
