@@ -16,28 +16,49 @@ const Chatbot = () => {
   const messages = useSelector((state: RootState) => selectChatMessages(state)) as ChatMessage[];
 
   const [input, setInput] = useState('');
-  const [open, setOpen] = useState(false); // default to closed
-  const [welcomeSent, setWelcomeSent] = useState(false); // track if welcome was sent
+  const [open, setOpen] = useState(false);
+  const [welcomeSent, setWelcomeSent] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Scroll to bottom when messages update
+  // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Show welcome message when chat opens (only once)
+  // Show welcome messages once when chat opens
   useEffect(() => {
-    if (open && messages.length === 0 && !welcomeSent) {
+    if (open && !welcomeSent) {
       dispatch(addBotMessage("👋 Hello! I’m your friendly AI chatbot. Ask me anything about properties!"));
       dispatch(addBotMessage("Tap a city to see"));
       setWelcomeSent(true);
     }
-  }, [open, messages.length, welcomeSent, dispatch]);
+  }, [open, welcomeSent, dispatch]);
 
   const handleSend = () => {
     if (!input.trim()) return;
+
     dispatch(addUserMessage(input));
-    dispatch(sendMessage(input));
+
+    dispatch(sendMessage(input)).then((action) => {
+      if (sendMessage.fulfilled.match(action)) {
+        const fullReply = action.payload.botReply;
+
+        const propertyMessages = fullReply
+          .split(/(?=Title)/g)
+          .map(msg => msg.trim())
+          .filter(Boolean)
+          .slice(0, 3);
+
+        if (propertyMessages.length) {
+          propertyMessages.forEach(msg => dispatch(addBotMessage(msg)));
+        } else {
+          dispatch(addBotMessage(fullReply));
+        }
+      } else {
+        dispatch(addBotMessage("Sorry, something went wrong."));
+      }
+    });
+
     setInput('');
   };
 

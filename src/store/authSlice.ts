@@ -48,15 +48,8 @@ export const register = createAsyncThunk(
     try {
       const response = await axios.post('/register', userData);
 
-      const loginResult = await dispatch(
-        login({ email: userData.email, password: userData.password })
-      );
-
-      if (login.fulfilled.match(loginResult)) {
-        return loginResult.payload; // 👈 return logged-in user
-      } else {
-        return rejectWithValue('Login failed after registration.');
-      }
+    console.log('Register response:', response.data);
+return response.data.user;  // Make sure `user` exists here
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }

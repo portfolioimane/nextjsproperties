@@ -33,15 +33,19 @@ const chatbotSlice = createSlice({
     addBotMessage(state, action: PayloadAction<string>) {
       state.messages.push({ text: action.payload, from: 'bot' });
     },
+    clearMessages(state) {
+      state.messages = [];
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(sendMessage.fulfilled, (state, action) => {
-      state.messages.push({ text: action.payload.botReply, from: 'bot' });
+      // We no longer push here, will handle in React component for splitting
+      // Or you can leave this empty or remove if you want to handle entirely in component
     });
   },
 });
 
-export const { addUserMessage, addBotMessage } = chatbotSlice.actions;
+export const { addUserMessage, addBotMessage, clearMessages } = chatbotSlice.actions;
 export const selectChatMessages = (state: { chatbot: ChatbotState }) => state.chatbot.messages;
 
 export default chatbotSlice.reducer;

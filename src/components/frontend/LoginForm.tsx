@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store';
-import { login } from '@/store/authSlice';
+import { login, checkAuth } from '@/store/authSlice';
 
 export default function LoginForm() {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,28 +15,26 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
-    const user = await dispatch(login({ email, password })).unwrap();
-    console.log('user', user);
-
-    // Wait 300ms before redirecting
-    setTimeout(() => {
-      if (user.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else if (user.role === 'owner') {
-        router.push('/owner/dashboard');
-      } else {
-        const redirect = searchParams.get('redirect') || '/';
-        router.push(redirect);
-      }
-    }, 300);
+    await dispatch(login({ email, password })).unwrap();
     
+    // After login succeeds, fetch the user info again to be sure
+    const user = await dispatch(checkAuth()).unwrap();
+
+    if (user.role === 'admin') {
+      router.push('/admin/dashboard');
+    } else if (user.role === 'owner') {
+      router.push('/owner/dashboard');
+    } else {
+      router.push('/');
+    }
   } catch (err: any) {
     setError(err.message || 'Login failed. Please check your credentials.');
   }
 };
+
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store';
-import { register } from '@/store/authSlice';
+import { register, checkAuth } from '@/store/authSlice';
 
 export default function RegisterForm() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,7 +38,8 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 
   try {
-    const user = await dispatch(
+    // Dispatch register thunk
+    await dispatch(
       register({
         name,
         email,
@@ -49,8 +50,12 @@ const handleSubmit = async (e: React.FormEvent) => {
       })
     ).unwrap();
 
-    console.log('Registered user', user);
+    // After register, fetch authenticated user info
+    const user = await dispatch(checkAuth()).unwrap();
 
+    console.log('Authenticated user after register:', user);
+
+    // Redirect based on role
     if (user.role === 'admin') {
       router.push('/admin/dashboard');
     } else if (user.role === 'owner') {
@@ -68,6 +73,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   }
 };
+
 
 
   // SVG icons for eye and eye-off
